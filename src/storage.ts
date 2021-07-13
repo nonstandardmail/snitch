@@ -22,7 +22,10 @@ export function setSessionEngagementTime(engagementTimeMsec: number) {
 }
 
 export function getSessionEngagementTime(): number {
-  return parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_ENGAGEMENT_TIME_MSEC_KEY) as string)
+  return parseInt(
+    localStorage.getItem(LOCAL_STORAGE_SESSION_ENGAGEMENT_TIME_MSEC_KEY) as string,
+    10
+  )
 }
 
 export function setSessionUTMParams(utmParamsCompactString: string) {
@@ -41,16 +44,16 @@ export function setLastInterctiveEventTS(lastInteractiveEventTS: number) {
 }
 
 export function getLastInteractiveEventTS(): number {
-  return parseInt(localStorage.getItem(LOCAL_STORAGE_LAST_INTERACTIVE_EVENT_TS_KEY) as string)
+  return parseInt(localStorage.getItem(LOCAL_STORAGE_LAST_INTERACTIVE_EVENT_TS_KEY) as string, 10)
 }
 
 export function incrementSessionCount() {
   localStorage.setItem(
     LOCAL_STORAGE_SESSION_COUNT_KEY,
-    (parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_COUNT_KEY) || '0') + 1).toString()
+    (parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_COUNT_KEY) || '0', 10) + 1).toString()
   )
 }
 
 export function getSessionCount(): number {
-  return parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_COUNT_KEY) as string)
+  return parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_COUNT_KEY) as string, 10)
 }

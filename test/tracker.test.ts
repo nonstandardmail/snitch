@@ -36,6 +36,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        href: window.location.href,
         sid: sessionId,
         scnt: sessionCount,
         set: sessionEngagementTimeMsec,
@@ -58,6 +59,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 2,
         set: storage.getSessionEngagementTime(),
@@ -80,6 +82,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),
@@ -98,6 +101,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),
@@ -118,6 +122,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),

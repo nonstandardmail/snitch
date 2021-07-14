@@ -57,6 +57,7 @@ export default class Tracker {
       type: 'reachGoal',
       goal: eventName,
       params: {
+        href: window.location.href,
         sid: storage.getSessionId() as string,
         scnt: storage.getSessionCount(),
         set: storage.getSessionEngagementTime(),

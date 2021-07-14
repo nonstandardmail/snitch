@@ -1,5 +1,9 @@
 import { nth } from 'ramda'
-import { INIT_ERROR_NO_TMR_COUNTER, SESSION_EXPIRING_INACTIVITY_TIME_MSEC } from '../src/constants'
+import {
+  ERROR_SCREEN_TRACKING_DISABLED,
+  INIT_ERROR_NO_TMR_COUNTER,
+  SESSION_EXPIRING_INACTIVITY_TIME_MSEC
+} from '../src/constants'
 import * as storage from '../src/storage'
 import Tracker from '../src/tracker'
 import './util/setup-crypto'
@@ -36,6 +40,8 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
+        href: window.location.href,
         sid: sessionId,
         scnt: sessionCount,
         set: sessionEngagementTimeMsec,
@@ -58,6 +64,8 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 2,
         set: storage.getSessionEngagementTime(),
@@ -80,6 +88,8 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),
@@ -98,6 +108,8 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        tiid: Tracker.trackerInstanceId,
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),
@@ -118,6 +130,8 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        tiid: Tracker.trackerInstanceId,
+        href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
         set: storage.getSessionEngagementTime(),
@@ -143,5 +157,32 @@ describe('Tracker', () => {
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(nth(-2, postedTMREventsLog).goal).toEqual('sessionStart')
     expect(nth(-1, postedTMREventsLog).params.sid !== oldSessionId).toBeTruthy()
+  })
+
+  it('it tracks screen views', () => {
+    Tracker.init({
+      tmrCounterId: TEST_COUNTER_ID,
+      appVersion: TEST_APP_VERSION,
+      currentScreen: { screenType: 'onboarding', screenId: 'step1' }
+    })
+    expect(nth(-1, postedTMREventsLog).goal).toEqual('sessionStart')
+    expect(nth(-1, postedTMREventsLog).params.sct).toEqual('onboarding')
+    expect(nth(-1, postedTMREventsLog).params.scid).toEqual('step1')
+    expect(nth(-1, postedTMREventsLog).params.psct).toEqual('')
+    expect(nth(-1, postedTMREventsLog).params.pscid).toEqual('')
+    Tracker.setCurrentScreen('catalogue')
+    expect(nth(-1, postedTMREventsLog).goal).toEqual('screenChange')
+    expect(nth(-1, postedTMREventsLog).params.sct).toEqual('catalogue')
+    expect(nth(-1, postedTMREventsLog).params.scid).toEqual('')
+    expect(nth(-1, postedTMREventsLog).params.psct).toEqual('onboarding')
+    expect(nth(-1, postedTMREventsLog).params.pscid).toEqual('step1')
+  })
+
+  it('it throws error on setCurrentScreen call if was initialized with no currentScreen option', () => {
+    Tracker.init({
+      tmrCounterId: TEST_COUNTER_ID,
+      appVersion: TEST_APP_VERSION
+    })
+    expect(() => Tracker.setCurrentScreen('catalogue')).toThrowError(ERROR_SCREEN_TRACKING_DISABLED)
   })
 })

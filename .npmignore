@@ -1,0 +1,6 @@
+test/
+tsconfig.json
+coverage/
+docs/
+.rpt2_cache/
+.github

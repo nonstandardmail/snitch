@@ -1,3 +1,3 @@
-import * as Snitch from './tracker'
+import Tracker from './tracker'
 
-export default Snitch
+export default Tracker

@@ -4,15 +4,11 @@ import typescript from '@rollup/plugin-typescript'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import { terser } from 'rollup-plugin-terser'
 
-const pkg = require('./package.json')
-
-const libraryName = 'snitch'
-
 export default {
   input: `src/index.ts`,
   output: {
-    file: `dist/${libraryName}.min.js`,
-    name: libraryName,
+    file: `dist/snitch.min.js`,
+    name: 'Snitch',
     format: 'iife',
     sourcemap: true
   },

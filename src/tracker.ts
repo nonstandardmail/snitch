@@ -1,5 +1,5 @@
 import {
-  INIT_ERROR_NO_CONFIG,
+  ERROR_SCREEN_TRACKING_DISABLED,
   INIT_ERROR_NO_TMR_COUNTER,
   INIT_ERROR_NO_TMR_COUNTER_ID,
   SESSION_EXPIRING_INACTIVITY_TIME_MSEC
@@ -9,24 +9,37 @@ import * as storage from './storage'
 import './tmr-counter'
 import * as utm from './utm'
 
-type TrackerConfigurationObject = {
+type TrackerInitializationParams = {
   tmrCounterId: string
   appVersion?: string
+  currentScreen?: { screenType: string; screenId?: string }
 }
 
 type TrackerEventPayload = {
   [key: string]: string | number
 }
+type ScreenInfo = {
+  screenType: string
+  screenId: string
+}
 
+const defaultScreen: ScreenInfo = { screenType: '', screenId: '' }
 export default class Tracker {
-  private static config: TrackerConfigurationObject
+  private static tmrCounterId: string
+  private static appVersion: string
+  private static screenTrackingEnabled: boolean = false
+  private static currentScreen: ScreenInfo = defaultScreen
+  private static previousScreen: ScreenInfo = defaultScreen
   public static trackerInstanceId: string
 
-  static init(config: TrackerConfigurationObject): void {
+  static init(options: TrackerInitializationParams): void {
     if (!window._tmr) throw Error(INIT_ERROR_NO_TMR_COUNTER)
-    if (!config) throw TypeError(INIT_ERROR_NO_CONFIG)
-    if (!config.tmrCounterId) throw TypeError(INIT_ERROR_NO_TMR_COUNTER_ID)
-    this.config = config
+    if (!options.tmrCounterId) throw TypeError(INIT_ERROR_NO_TMR_COUNTER_ID)
+    this.tmrCounterId = options.tmrCounterId
+    this.appVersion = options.appVersion || ''
+    this.screenTrackingEnabled = !!options.currentScreen
+    if (this.screenTrackingEnabled)
+      this.currentScreen = Object.assign({}, this.currentScreen, options.currentScreen)
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     const deviceHadNoSessionsSoFar = storage.getSessionId() === null
     const urlHasUTMParams = utm.urlHasParams(location.href)
@@ -54,21 +67,29 @@ export default class Tracker {
     eventPayload: TrackerEventPayload = {},
     eventValue?: number
   ) {
+    const params = {
+      tiid: this.trackerInstanceId,
+      href: window.location.href,
+      sid: storage.getSessionId() as string,
+      scnt: storage.getSessionCount(),
+      set: storage.getSessionEngagementTime(),
+      sutm: storage.getSessionUTMParams(),
+      ...eventPayload
+    }
+    if (this.screenTrackingEnabled)
+      Object.assign(params, {
+        sct: this.currentScreen.screenType,
+        scid: this.currentScreen.screenId,
+        psct: this.previousScreen.screenType,
+        pscid: this.previousScreen.screenId
+      })
     window._tmr.push({
-      id: this.config.tmrCounterId,
+      id: this.tmrCounterId,
       type: 'reachGoal',
       goal: eventName,
-      params: {
-        tiid: this.trackerInstanceId,
-        href: window.location.href,
-        sid: storage.getSessionId() as string,
-        scnt: storage.getSessionCount(),
-        set: storage.getSessionEngagementTime(),
-        sutm: storage.getSessionUTMParams(),
-        ...eventPayload
-      },
+      params,
       value: eventValue,
-      version: this.config.appVersion || ''
+      version: this.appVersion || ''
     })
   }
 
@@ -76,5 +97,14 @@ export default class Tracker {
     if (this.isSessionExpired()) this.startNewSession()
     this.postEvent(eventName, eventPayload, eventValue)
     storage.setLastInterctiveEventTS(Date.now())
+  }
+
+  public static setCurrentScreen(screenType: string, screenId: string = '') {
+    if (!this.screenTrackingEnabled) {
+      throw Error(ERROR_SCREEN_TRACKING_DISABLED)
+    }
+    this.previousScreen = this.currentScreen
+    this.currentScreen = { screenType, screenId }
+    this.track('screenChange')
   }
 }

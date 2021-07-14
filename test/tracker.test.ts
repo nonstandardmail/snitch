@@ -36,6 +36,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
         href: window.location.href,
         sid: sessionId,
         scnt: sessionCount,
@@ -59,6 +60,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 2,
@@ -82,6 +84,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: 'sessionStart',
       params: {
+        tiid: Tracker.trackerInstanceId,
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
@@ -101,6 +104,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        tiid: Tracker.trackerInstanceId,
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
@@ -122,6 +126,7 @@ describe('Tracker', () => {
       type: 'reachGoal',
       goal: testEventName,
       params: {
+        tiid: Tracker.trackerInstanceId,
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,

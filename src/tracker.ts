@@ -4,7 +4,7 @@ import {
   INIT_ERROR_NO_TMR_COUNTER_ID,
   SESSION_EXPIRING_INACTIVITY_TIME_MSEC
 } from './constants'
-import createSessionId from './create-session-id'
+import createUniqueId from './create-unique-id'
 import * as storage from './storage'
 import './tmr-counter'
 import * as utm from './utm'
@@ -20,12 +20,14 @@ type TrackerEventPayload = {
 
 export default class Tracker {
   private static config: TrackerConfigurationObject
+  public static trackerInstanceId: string
 
   static init(config: TrackerConfigurationObject): void {
     if (!window._tmr) throw Error(INIT_ERROR_NO_TMR_COUNTER)
     if (!config) throw TypeError(INIT_ERROR_NO_CONFIG)
     if (!config.tmrCounterId) throw TypeError(INIT_ERROR_NO_TMR_COUNTER_ID)
     this.config = config
+    this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     const deviceHadNoSessionsSoFar = storage.getSessionId() === null
     const urlHasUTMParams = utm.urlHasParams(location.href)
     const currentSessionExpired = this.isSessionExpired()
@@ -39,7 +41,7 @@ export default class Tracker {
   }
 
   private static startNewSession() {
-    storage.setSessionId(createSessionId())
+    storage.setSessionId(createUniqueId())
     storage.setSessionEngagementTime(window.performance.now())
     storage.setSessionUTMParams(utm.stringifyCompact(location.href))
     storage.incrementSessionCount()
@@ -57,6 +59,7 @@ export default class Tracker {
       type: 'reachGoal',
       goal: eventName,
       params: {
+        tiid: this.trackerInstanceId,
         href: window.location.href,
         sid: storage.getSessionId() as string,
         scnt: storage.getSessionCount(),

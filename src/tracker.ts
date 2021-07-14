@@ -18,6 +18,7 @@ type TrackerInitializationParams = {
 type TrackerEventPayload = {
   [key: string]: string | number
 }
+
 type ScreenInfo = {
   screenType: string
   screenId: string
@@ -27,9 +28,9 @@ const defaultScreen: ScreenInfo = { screenType: '', screenId: '' }
 export default class Tracker {
   private static tmrCounterId: string
   private static appVersion: string
-  private static screenTrackingEnabled: boolean = false
-  private static currentScreen: ScreenInfo = defaultScreen
-  private static previousScreen: ScreenInfo = defaultScreen
+  private static screenTrackingEnabled: boolean
+  private static currentScreen: ScreenInfo
+  private static previousScreen: ScreenInfo
   public static trackerInstanceId: string
 
   static init(options: TrackerInitializationParams): void {
@@ -38,8 +39,10 @@ export default class Tracker {
     this.tmrCounterId = options.tmrCounterId
     this.appVersion = options.appVersion || ''
     this.screenTrackingEnabled = !!options.currentScreen
-    if (this.screenTrackingEnabled)
-      this.currentScreen = Object.assign({}, this.currentScreen, options.currentScreen)
+    if (this.screenTrackingEnabled) {
+      this.currentScreen = Object.assign({}, defaultScreen, options.currentScreen)
+      this.previousScreen = defaultScreen
+    }
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     const deviceHadNoSessionsSoFar = storage.getSessionId() === null
     const urlHasUTMParams = utm.urlHasParams(location.href)
@@ -93,7 +96,11 @@ export default class Tracker {
     })
   }
 
-  public static track(eventName: string, eventPayload?: TrackerEventPayload, eventValue?: number) {
+  public static trackEvent(
+    eventName: string,
+    eventPayload?: TrackerEventPayload,
+    eventValue?: number
+  ) {
     if (this.isSessionExpired()) this.startNewSession()
     this.postEvent(eventName, eventPayload, eventValue)
     storage.setLastInterctiveEventTS(Date.now())
@@ -105,6 +112,6 @@ export default class Tracker {
     }
     this.previousScreen = this.currentScreen
     this.currentScreen = { screenType, screenId }
-    this.track('screenChange')
+    this.trackEvent('screenChange')
   }
 }

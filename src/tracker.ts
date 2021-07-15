@@ -31,7 +31,6 @@ export default class Tracker {
   private static appVersion: string
   private static screenTrackingEnabled: boolean
   private static currentScreen: ScreenInfo
-  private static previousScreen: ScreenInfo
   public static trackerInstanceId: string
   private static currentLocation: string
   private static isListeningForLocationChange: boolean
@@ -44,7 +43,6 @@ export default class Tracker {
     this.screenTrackingEnabled = !!options.currentScreen
     if (this.screenTrackingEnabled) {
       this.currentScreen = Object.assign({}, defaultScreen, options.currentScreen)
-      this.previousScreen = defaultScreen
     }
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     const deviceHadNoSessionsSoFar = storage.getSessionId() === null
@@ -124,11 +122,11 @@ export default class Tracker {
     if (!this.screenTrackingEnabled) {
       throw Error(ERROR_SCREEN_TRACKING_DISABLED)
     }
-    this.previousScreen = this.currentScreen
+    const previousScreen = this.currentScreen
     this.currentScreen = { screenType, screenId }
     this.trackEvent('screenChange', {
-      psct: this.previousScreen.screenType,
-      pscid: this.previousScreen.screenId
+      psct: previousScreen.screenType,
+      pscid: previousScreen.screenId
     })
   }
 }

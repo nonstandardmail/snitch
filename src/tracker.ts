@@ -5,6 +5,7 @@ import {
   SESSION_EXPIRING_INACTIVITY_TIME_MSEC
 } from './constants'
 import createUniqueId from './create-unique-id'
+import listenForLocationChange from './listen-for-location-change'
 import * as storage from './storage'
 import './tmr-counter'
 import * as utm from './utm'
@@ -32,6 +33,8 @@ export default class Tracker {
   private static currentScreen: ScreenInfo
   private static previousScreen: ScreenInfo
   public static trackerInstanceId: string
+  private static currentLocation: string
+  private static isListeningForLocationChange: boolean
 
   static init(options: TrackerInitializationParams): void {
     if (!window._tmr) throw Error(INIT_ERROR_NO_TMR_COUNTER)
@@ -49,7 +52,20 @@ export default class Tracker {
     const currentSessionExpired = this.isSessionExpired()
     const shouldStartNewSession =
       deviceHadNoSessionsSoFar || urlHasUTMParams || currentSessionExpired
-    if (shouldStartNewSession) return this.startNewSession()
+    if (shouldStartNewSession) this.startNewSession()
+    this.currentLocation = window.location.href
+    if (!this.isListeningForLocationChange) {
+      listenForLocationChange(this.onLocationChange.bind(this))
+      this.isListeningForLocationChange = true
+    }
+    this.trackEvent('open')
+  }
+
+  private static onLocationChange() {
+    if (this.currentLocation !== window.location.href) {
+      this.trackEvent('locationChange', { phref: this.currentLocation })
+      this.currentLocation = window.location.href
+    }
   }
 
   private static isSessionExpired(): boolean {
@@ -82,9 +98,7 @@ export default class Tracker {
     if (this.screenTrackingEnabled)
       Object.assign(params, {
         sct: this.currentScreen.screenType,
-        scid: this.currentScreen.screenId,
-        psct: this.previousScreen.screenType,
-        pscid: this.previousScreen.screenId
+        scid: this.currentScreen.screenId
       })
     window._tmr.push({
       id: this.tmrCounterId,
@@ -112,6 +126,9 @@ export default class Tracker {
     }
     this.previousScreen = this.currentScreen
     this.currentScreen = { screenType, screenId }
-    this.trackEvent('screenChange')
+    this.trackEvent('screenChange', {
+      psct: this.previousScreen.screenType,
+      pscid: this.previousScreen.screenId
+    })
   }
 }

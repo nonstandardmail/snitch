@@ -23,5 +23,5 @@ window.history.replaceState = patchMethodWithCallbackCall(
 window.addEventListener('popstate', onStateChange)
 
 export default function listenForLocationChange(onLocationChange: Function) {
-  listeners.push(onLocationChange)
+  if (!~listeners.indexOf(onLocationChange)) listeners.push(onLocationChange)
 }

@@ -1,3 +1,4 @@
+import delay from 'delay'
 import { nth } from 'ramda'
 import {
   ERROR_SCREEN_TRACKING_DISABLED,
@@ -35,7 +36,7 @@ describe('Tracker', () => {
     expect(sessionEngagementTimeMsec > 0).toBeTruthy()
     expect(sessionCount).toEqual(1)
     expect(sessionUTMParams).toEqual('')
-    expect(nth(-1, postedTMREventsLog)).toEqual({
+    expect(nth(-2, postedTMREventsLog)).toEqual({
       id: TEST_COUNTER_ID,
       type: 'reachGoal',
       goal: 'sessionStart',
@@ -52,6 +53,16 @@ describe('Tracker', () => {
     })
   })
 
+  it('it still sends an "open" event on init if new session is not created', () => {
+    const sessionId = storage.getSessionId()
+    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    expect(storage.getSessionId()).toEqual(sessionId)
+    expect(storage.getSessionCount()).toEqual(1)
+    const openEvent = nth(-1, postedTMREventsLog)
+    expect(openEvent.goal).toEqual('open')
+    expect(openEvent.params.sid).toEqual(sessionId)
+  })
+
   it('it starts a new session on init if utm params are set', () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
@@ -59,7 +70,7 @@ describe('Tracker', () => {
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
     expect(storage.getSessionUTMParams()).toEqual('vk,promopost')
-    expect(nth(-1, postedTMREventsLog)).toEqual({
+    expect(nth(-2, postedTMREventsLog)).toEqual({
       id: TEST_COUNTER_ID,
       type: 'reachGoal',
       goal: 'sessionStart',
@@ -83,7 +94,7 @@ describe('Tracker', () => {
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(3)
     expect(storage.getLastInteractiveEventTS() > 0).toBeTruthy()
-    expect(nth(-1, postedTMREventsLog)).toEqual({
+    expect(nth(-2, postedTMREventsLog)).toEqual({
       id: TEST_COUNTER_ID,
       type: 'reachGoal',
       goal: 'sessionStart',
@@ -102,7 +113,7 @@ describe('Tracker', () => {
 
   it('it tracks events', () => {
     const testEventName = 'testEvent'
-    Tracker.track(testEventName)
+    Tracker.trackEvent(testEventName)
     expect(nth(-1, postedTMREventsLog)).toEqual({
       id: TEST_COUNTER_ID,
       type: 'reachGoal',
@@ -124,7 +135,7 @@ describe('Tracker', () => {
     const testEventName = 'testEvent'
     const testEventPayload = { param1: '1', param2: 2 }
     const eventValue = 40
-    Tracker.track(testEventName, testEventPayload, eventValue)
+    Tracker.trackEvent(testEventName, testEventPayload, eventValue)
     expect(nth(-1, postedTMREventsLog)).toEqual({
       id: TEST_COUNTER_ID,
       type: 'reachGoal',
@@ -146,14 +157,14 @@ describe('Tracker', () => {
   it('it updates last interactive event TS after tracking the event', () => {
     const lastInteractiveEventTS = Date.now() - 1
     storage.setLastInterctiveEventTS(lastInteractiveEventTS)
-    Tracker.track('testEvent')
+    Tracker.trackEvent('testEvent')
     expect(lastInteractiveEventTS !== storage.getLastInteractiveEventTS()).toBeTruthy()
   })
 
   it('it starts a new session before tracking event if last interactive event was a while ago', () => {
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     const oldSessionId = storage.getSessionId()
-    Tracker.track('testEvent')
+    Tracker.trackEvent('testEvent')
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(nth(-2, postedTMREventsLog).goal).toEqual('sessionStart')
     expect(nth(-1, postedTMREventsLog).params.sid !== oldSessionId).toBeTruthy()
@@ -165,17 +176,21 @@ describe('Tracker', () => {
       appVersion: TEST_APP_VERSION,
       currentScreen: { screenType: 'onboarding', screenId: 'step1' }
     })
-    expect(nth(-1, postedTMREventsLog).goal).toEqual('sessionStart')
-    expect(nth(-1, postedTMREventsLog).params.sct).toEqual('onboarding')
-    expect(nth(-1, postedTMREventsLog).params.scid).toEqual('step1')
-    expect(nth(-1, postedTMREventsLog).params.psct).toEqual('')
-    expect(nth(-1, postedTMREventsLog).params.pscid).toEqual('')
+    const sessionStartEvent = nth(-2, postedTMREventsLog)
+    expect(sessionStartEvent.goal).toEqual('sessionStart')
+    expect(sessionStartEvent.params.sct).toEqual('onboarding')
+    expect(sessionStartEvent.params.scid).toEqual('step1')
+    const openEvent = nth(-1, postedTMREventsLog)
+    expect(openEvent.goal).toEqual('open')
+    expect(openEvent.params.sct).toEqual('onboarding')
+    expect(openEvent.params.scid).toEqual('step1')
     Tracker.setCurrentScreen('catalogue')
-    expect(nth(-1, postedTMREventsLog).goal).toEqual('screenChange')
-    expect(nth(-1, postedTMREventsLog).params.sct).toEqual('catalogue')
-    expect(nth(-1, postedTMREventsLog).params.scid).toEqual('')
-    expect(nth(-1, postedTMREventsLog).params.psct).toEqual('onboarding')
-    expect(nth(-1, postedTMREventsLog).params.pscid).toEqual('step1')
+    const screenChangeEvent = nth(-1, postedTMREventsLog)
+    expect(screenChangeEvent.goal).toEqual('screenChange')
+    expect(screenChangeEvent.params.sct).toEqual('catalogue')
+    expect(screenChangeEvent.params.scid).toEqual('')
+    expect(screenChangeEvent.params.psct).toEqual('onboarding')
+    expect(screenChangeEvent.params.pscid).toEqual('step1')
   })
 
   it('it throws error on setCurrentScreen call if was initialized with no currentScreen option', () => {
@@ -185,4 +200,26 @@ describe('Tracker', () => {
     })
     expect(() => Tracker.setCurrentScreen('catalogue')).toThrowError(ERROR_SCREEN_TRACKING_DISABLED)
   })
+
+  it('it tracks location changes by sending locationChange event', async () => {
+    const oldLocation = window.location.href
+    window.history.pushState({}, '', '/login')
+    await delay(1)
+    expect(nth(-1, postedTMREventsLog).goal).toEqual('locationChange')
+    expect(nth(-1, postedTMREventsLog).params.href).toEqual(window.location.href)
+    expect(nth(-1, postedTMREventsLog).params.phref).toEqual(oldLocation)
+  })
+
+  it('it does not track location changes if location.href stays the same', async () => {
+    const eventsLogLengthBeforePushState = postedTMREventsLog.length
+    window.history.pushState({}, '', '/login')
+    await delay(1)
+    expect(postedTMREventsLog.length).toEqual(eventsLogLengthBeforePushState)
+  })
 })
+
+/** TODO: we should track showing initial screen and initial location.
+ * the problem with current implementation is that we dont send screen and location events
+ * if opened new page with continuing session.
+ * We might add event 'init' or 'open' so that we always know on which location / screen
+ * **/

@@ -217,9 +217,3 @@ describe('Tracker', () => {
     expect(postedTMREventsLog.length).toEqual(eventsLogLengthBeforePushState)
   })
 })
-
-/** TODO: we should track showing initial screen and initial location.
- * the problem with current implementation is that we dont send screen and location events
- * if opened new page with continuing session.
- * We might add event 'init' or 'open' so that we always know on which location / screen
- * **/

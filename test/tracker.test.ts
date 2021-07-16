@@ -28,12 +28,12 @@ describe('Tracker', () => {
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
     const sessionId = storage.getSessionId()
     const lastInteractiveEventTS = storage.getLastInteractiveEventTS()
-    const sessionEngagementTimeMsec = storage.getSessionEngagementTime()
+    const sessionStartTS = storage.getSessionStartTS()
+    const sessionEngagementTimeMsec = Date.now() - sessionStartTS
     const sessionCount = storage.getSessionCount()
     const sessionUTMParams = storage.getSessionUTMParams()
     expect(sessionId).toBeTruthy()
     expect(lastInteractiveEventTS).toBeTruthy()
-    expect(sessionEngagementTimeMsec > 0).toBeTruthy()
     expect(sessionCount).toEqual(1)
     expect(sessionUTMParams).toEqual('')
     expect(nth(-2, postedTMREventsLog)).toEqual({
@@ -67,6 +67,8 @@ describe('Tracker', () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    const sessionStartTS = storage.getSessionStartTS()
+    const sessionEngagementTimeMsec = Date.now() - sessionStartTS
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
     expect(storage.getSessionUTMParams()).toEqual('vk,promopost')
@@ -79,7 +81,7 @@ describe('Tracker', () => {
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 2,
-        set: storage.getSessionEngagementTime(),
+        set: sessionEngagementTimeMsec,
         sutm: 'vk,promopost'
       },
       value: undefined,
@@ -103,7 +105,7 @@ describe('Tracker', () => {
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
-        set: storage.getSessionEngagementTime(),
+        set: 0,
         sutm: 'vk,promopost'
       },
       value: undefined,
@@ -123,7 +125,7 @@ describe('Tracker', () => {
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
-        set: storage.getSessionEngagementTime(),
+        set: Date.now() - storage.getSessionStartTS(),
         sutm: 'vk,promopost'
       },
       value: undefined,
@@ -145,7 +147,7 @@ describe('Tracker', () => {
         href: window.location.href,
         sid: storage.getSessionId(),
         scnt: 3,
-        set: storage.getSessionEngagementTime(),
+        set: Date.now() - storage.getSessionStartTS(),
         sutm: 'vk,promopost',
         ...testEventPayload
       },

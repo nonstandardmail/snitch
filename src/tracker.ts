@@ -72,7 +72,7 @@ export default class Tracker {
 
   private static startNewSession() {
     storage.setSessionId(createUniqueId())
-    storage.setSessionEngagementTime(window.performance.now())
+    storage.setSessionStartTS(Date.now())
     storage.setSessionUTMParams(utm.stringifyCompact(location.href))
     storage.incrementSessionCount()
     storage.setLastInterctiveEventTS(Date.now())
@@ -89,7 +89,7 @@ export default class Tracker {
       href: window.location.href,
       sid: storage.getSessionId() as string,
       scnt: storage.getSessionCount(),
-      set: storage.getSessionEngagementTime(),
+      set: Date.now() - storage.getSessionStartTS(),
       sutm: storage.getSessionUTMParams(),
       ...eventPayload
     }

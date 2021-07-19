@@ -6,8 +6,8 @@ import {
   SESSION_EXPIRING_INACTIVITY_TIME_MSEC
 } from './constants'
 import createUniqueId from './create-unique-id'
-import listenForLocationChange from './listen-for-location-change'
 import engagementTrackerPlugin from './plugins/engagement-tracker/engagement-tracker-plugin'
+import locationChangeTrackerPlugin from './plugins/location-change-tracker/location-change-tracker-plugin'
 import * as storage from './storage'
 import './tmr-counter'
 import * as utm from './utm'
@@ -35,8 +35,6 @@ export default class Tracker {
   private static screenTrackingEnabled: boolean
   private static currentScreen: ScreenInfo
   public static trackerInstanceId: string
-  private static currentLocation: string
-  private static isListeningForLocationChange: boolean
 
   static init(options: TrackerInitializationOptions): void {
     if (!window._tmr) throw Error(INIT_ERROR_NO_TMR_COUNTER)
@@ -54,23 +52,12 @@ export default class Tracker {
     const shouldStartNewSession =
       deviceHadNoSessionsSoFar || urlHasUTMParams || currentSessionExpired
     if (shouldStartNewSession) this.startNewSession()
-    this.currentLocation = window.location.href
-    if (!this.isListeningForLocationChange) {
-      listenForLocationChange(this.onLocationChange.bind(this))
-      this.isListeningForLocationChange = true
-    }
     this.trackEvent('open')
+    locationChangeTrackerPlugin(Tracker)
     engagementTrackerPlugin(Tracker, {
       engagementTrackingInterval:
         options.engagementTrackingIntervalMsec || ENGAGEMENT_TRACKING_INTERVAL_MSEC
     })
-  }
-
-  private static onLocationChange() {
-    if (this.currentLocation !== window.location.href) {
-      this.trackEvent('locationChange', { phref: this.currentLocation })
-      this.currentLocation = window.location.href
-    }
   }
 
   private static isSessionExpired(): boolean {

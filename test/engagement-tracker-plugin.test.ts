@@ -1,6 +1,5 @@
 import delay from 'delay'
 import engagementTrackerPlugin from '../src/plugins/engagement-tracker/engagement-tracker-plugin'
-import './util/setup-crypto'
 
 describe('Tracker', () => {
   it('it sends engagement events periodically', async () => {

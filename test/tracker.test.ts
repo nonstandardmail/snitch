@@ -26,132 +26,93 @@ describe('Tracker', () => {
   it('it starts a new session on first init', () => {
     window._tmr = tmrCounterMock
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    // persists session details
     const sessionId = storage.getSessionId()
     const lastInteractiveEventTS = storage.getLastInteractiveEventTS()
-    const sessionEngagementTimeMsec = storage.getSessionEngagementTime()
     const sessionCount = storage.getSessionCount()
     const sessionUTMParams = storage.getSessionUTMParams()
     expect(sessionId).toBeTruthy()
     expect(lastInteractiveEventTS).toBeTruthy()
-    expect(sessionEngagementTimeMsec > 0).toBeTruthy()
     expect(sessionCount).toEqual(1)
     expect(sessionUTMParams).toEqual('')
-    expect(nth(-2, postedTMREventsLog)).toEqual({
-      id: TEST_COUNTER_ID,
-      type: 'reachGoal',
-      goal: 'sessionStart',
-      params: {
-        tiid: Tracker.trackerInstanceId,
-        href: window.location.href,
-        sid: sessionId,
-        scnt: sessionCount,
-        set: sessionEngagementTimeMsec,
-        sutm: ''
-      },
-      value: undefined,
-      version: TEST_APP_VERSION
+    // posts TMR event
+    const sessionStartEvent = nth(-2, postedTMREventsLog)
+    expect(sessionStartEvent.id).toEqual(TEST_COUNTER_ID)
+    expect(sessionStartEvent.type).toEqual('reachGoal')
+    expect(sessionStartEvent.goal).toEqual('sessionStart')
+    expect(sessionStartEvent.value).toEqual(undefined)
+    expect(sessionStartEvent.version).toEqual(TEST_APP_VERSION)
+    expect(sessionStartEvent.params).toMatchObject({
+      tiid: Tracker.trackerInstanceId,
+      href: window.location.href,
+      sid: sessionId,
+      scnt: sessionCount,
+      sutm: ''
     })
+    expect(sessionStartEvent.params.set >= 0).toBeTruthy()
   })
 
   it('it still sends an "open" event on init if new session is not created', () => {
     const sessionId = storage.getSessionId()
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    // does not start a new session
     expect(storage.getSessionId()).toEqual(sessionId)
     expect(storage.getSessionCount()).toEqual(1)
+    // 'open' event is sent
     const openEvent = nth(-1, postedTMREventsLog)
     expect(openEvent.goal).toEqual('open')
     expect(openEvent.params.sid).toEqual(sessionId)
   })
 
-  it('it starts a new session on init if utm params are set', () => {
+  it('it starts a new session on init if utm params are set and sends them with TMR events', () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    // persists new session details with utm param values
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
     expect(storage.getSessionUTMParams()).toEqual('vk,promopost')
-    expect(nth(-2, postedTMREventsLog)).toEqual({
-      id: TEST_COUNTER_ID,
-      type: 'reachGoal',
-      goal: 'sessionStart',
-      params: {
-        tiid: Tracker.trackerInstanceId,
-        href: window.location.href,
-        sid: storage.getSessionId(),
-        scnt: 2,
-        set: storage.getSessionEngagementTime(),
-        sutm: 'vk,promopost'
-      },
-      value: undefined,
-      version: TEST_APP_VERSION
-    })
+    // sends utm params with TMR events
+    const sessionStartEvent = nth(-2, postedTMREventsLog)
+    const openEvent = nth(-1, postedTMREventsLog)
+    expect(sessionStartEvent.params.sid !== oldSessionId).toBeTruthy()
+    expect(sessionStartEvent.params.sutm).toEqual('vk,promopost')
+    // sends utm params with following events
+    expect(openEvent.params.sutm).toEqual('vk,promopost')
   })
 
   it('it starts a new session on init if existing session is stale', () => {
     const oldSessionId = storage.getSessionId()
-    storage.setLastInterctiveEventTS(0)
+    // make current session stale
+    storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
-    expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
+    // persists new session details
+    const newSessionId = storage.getSessionId()
+    expect(newSessionId !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(3)
     expect(storage.getLastInteractiveEventTS() > 0).toBeTruthy()
-    expect(nth(-2, postedTMREventsLog)).toEqual({
-      id: TEST_COUNTER_ID,
-      type: 'reachGoal',
-      goal: 'sessionStart',
-      params: {
-        tiid: Tracker.trackerInstanceId,
-        href: window.location.href,
-        sid: storage.getSessionId(),
-        scnt: 3,
-        set: storage.getSessionEngagementTime(),
-        sutm: 'vk,promopost'
-      },
-      value: undefined,
-      version: TEST_APP_VERSION
-    })
+    // sends sessionStart TMR event
+    const sessionStartEvent = nth(-2, postedTMREventsLog)
+    expect(sessionStartEvent.params.sid).toEqual(newSessionId)
+    expect(sessionStartEvent.params.scnt).toEqual(3)
   })
 
-  it('it tracks events', () => {
+  it('it tracks custom events', () => {
     const testEventName = 'testEvent'
     Tracker.trackEvent(testEventName)
-    expect(nth(-1, postedTMREventsLog)).toEqual({
-      id: TEST_COUNTER_ID,
-      type: 'reachGoal',
-      goal: testEventName,
-      params: {
-        tiid: Tracker.trackerInstanceId,
-        href: window.location.href,
-        sid: storage.getSessionId(),
-        scnt: 3,
-        set: storage.getSessionEngagementTime(),
-        sutm: 'vk,promopost'
-      },
-      value: undefined,
-      version: TEST_APP_VERSION
-    })
+    const testEvent = nth(-1, postedTMREventsLog)
+    expect(testEvent.goal).toEqual(testEventName)
   })
 
   it('it tracks events with payload and value', () => {
     const testEventName = 'testEvent'
     const testEventPayload = { param1: '1', param2: 2 }
-    const eventValue = 40
-    Tracker.trackEvent(testEventName, testEventPayload, eventValue)
-    expect(nth(-1, postedTMREventsLog)).toEqual({
-      id: TEST_COUNTER_ID,
-      type: 'reachGoal',
-      goal: testEventName,
-      params: {
-        tiid: Tracker.trackerInstanceId,
-        href: window.location.href,
-        sid: storage.getSessionId(),
-        scnt: 3,
-        set: storage.getSessionEngagementTime(),
-        sutm: 'vk,promopost',
-        ...testEventPayload
-      },
-      value: eventValue,
-      version: TEST_APP_VERSION
-    })
+    const testEventValue = 40
+    Tracker.trackEvent(testEventName, testEventPayload, testEventValue)
+    const testEvent = nth(-1, postedTMREventsLog)
+    expect(testEvent.goal).toEqual(testEventName)
+    expect(testEvent.params).toMatchObject(testEventPayload)
+    expect(testEvent.value).toEqual(testEventValue)
   })
 
   it('it updates last interactive event TS after tracking the event', () => {
@@ -162,6 +123,7 @@ describe('Tracker', () => {
   })
 
   it('it starts a new session before tracking event if last interactive event was a while ago', () => {
+    // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     const oldSessionId = storage.getSessionId()
     Tracker.trackEvent('testEvent')
@@ -205,9 +167,10 @@ describe('Tracker', () => {
     const oldLocation = window.location.href
     window.history.pushState({}, '', '/login')
     await delay(1)
-    expect(nth(-1, postedTMREventsLog).goal).toEqual('locationChange')
-    expect(nth(-1, postedTMREventsLog).params.href).toEqual(window.location.href)
-    expect(nth(-1, postedTMREventsLog).params.phref).toEqual(oldLocation)
+    const locationChangeEvent = nth(-1, postedTMREventsLog)
+    expect(locationChangeEvent.goal).toEqual('locationChange')
+    expect(locationChangeEvent.params.href).toEqual(window.location.href)
+    expect(locationChangeEvent.params.phref).toEqual(oldLocation)
   })
 
   it('it does not track location changes if location.href stays the same', async () => {
@@ -216,10 +179,15 @@ describe('Tracker', () => {
     await delay(1)
     expect(postedTMREventsLog.length).toEqual(eventsLogLengthBeforePushState)
   })
-})
 
-/** TODO: we should track showing initial screen and initial location.
- * the problem with current implementation is that we dont send screen and location events
- * if opened new page with continuing session.
- * We might add event 'init' or 'open' so that we always know on which location / screen
- * **/
+  it('it sends engagement events periodically', async () => {
+    Tracker.init({
+      tmrCounterId: TEST_COUNTER_ID,
+      appVersion: TEST_APP_VERSION,
+      engagementTrackingIntervalMsec: 100
+    })
+    await delay(250)
+    expect(nth(-1, postedTMREventsLog).goal).toEqual('engage')
+    expect(nth(-2, postedTMREventsLog).goal).toEqual('engage')
+  })
+})

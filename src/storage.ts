@@ -1,8 +1,8 @@
 import {
   LOCAL_STORAGE_LAST_INTERACTIVE_EVENT_TS_KEY,
   LOCAL_STORAGE_SESSION_COUNT_KEY,
-  LOCAL_STORAGE_SESSION_ENGAGEMENT_TIME_MSEC_KEY,
   LOCAL_STORAGE_SESSION_ID_KEY,
+  LOCAL_STORAGE_SESSION_START_TS_KEY,
   LOCAL_STORAGE_SESSION_UTM_PARAMS_KEY
 } from './constants'
 
@@ -14,18 +14,15 @@ export function getSessionId(): string | null {
   return localStorage.getItem(LOCAL_STORAGE_SESSION_ID_KEY)
 }
 
-export function setSessionEngagementTime(engagementTimeMsec: number) {
+export function setSessionStartTS(engagementTimeMsec: number) {
   localStorage.setItem(
-    LOCAL_STORAGE_SESSION_ENGAGEMENT_TIME_MSEC_KEY,
+    LOCAL_STORAGE_SESSION_START_TS_KEY,
     Math.floor(engagementTimeMsec).toString()
   )
 }
 
-export function getSessionEngagementTime(): number {
-  return parseInt(
-    localStorage.getItem(LOCAL_STORAGE_SESSION_ENGAGEMENT_TIME_MSEC_KEY) as string,
-    10
-  )
+export function getSessionStartTS(): number {
+  return parseInt(localStorage.getItem(LOCAL_STORAGE_SESSION_START_TS_KEY) as string, 10)
 }
 
 export function setSessionUTMParams(utmParamsCompactString: string) {

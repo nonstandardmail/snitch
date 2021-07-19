@@ -29,7 +29,7 @@
   },
   "jest": {
     "transform": {
-      ".ts": "ts-jest"
+      "^.+\\.[tj]s$": "ts-jest"
     },
     "testEnvironment": "jsdom",
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",

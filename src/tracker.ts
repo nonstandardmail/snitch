@@ -1,4 +1,5 @@
 import {
+  ENGAGEMENT_TRACKING_INTERVAL_MSEC,
   ERROR_SCREEN_TRACKING_DISABLED,
   INIT_ERROR_NO_TMR_COUNTER,
   INIT_ERROR_NO_TMR_COUNTER_ID,
@@ -6,14 +7,16 @@ import {
 } from './constants'
 import createUniqueId from './create-unique-id'
 import listenForLocationChange from './listen-for-location-change'
+import engagementTrackerPlugin from './plugins/engagement-tracker/engagement-tracker-plugin'
 import * as storage from './storage'
 import './tmr-counter'
 import * as utm from './utm'
 
-type TrackerInitializationParams = {
+type TrackerInitializationOptions = {
   tmrCounterId: string
   appVersion?: string
   currentScreen?: { screenType: string; screenId?: string }
+  engagementTrackingIntervalMsec?: number
 }
 
 type TrackerEventPayload = {
@@ -35,7 +38,7 @@ export default class Tracker {
   private static currentLocation: string
   private static isListeningForLocationChange: boolean
 
-  static init(options: TrackerInitializationParams): void {
+  static init(options: TrackerInitializationOptions): void {
     if (!window._tmr) throw Error(INIT_ERROR_NO_TMR_COUNTER)
     if (!options.tmrCounterId) throw TypeError(INIT_ERROR_NO_TMR_COUNTER_ID)
     this.tmrCounterId = options.tmrCounterId
@@ -57,6 +60,10 @@ export default class Tracker {
       this.isListeningForLocationChange = true
     }
     this.trackEvent('open')
+    engagementTrackerPlugin(Tracker, {
+      engagementTrackingInterval:
+        options.engagementTrackingIntervalMsec || ENGAGEMENT_TRACKING_INTERVAL_MSEC
+    })
   }
 
   private static onLocationChange() {
@@ -72,7 +79,7 @@ export default class Tracker {
 
   private static startNewSession() {
     storage.setSessionId(createUniqueId())
-    storage.setSessionEngagementTime(window.performance.now())
+    storage.setSessionStartTS(Date.now())
     storage.setSessionUTMParams(utm.stringifyCompact(location.href))
     storage.incrementSessionCount()
     storage.setLastInterctiveEventTS(Date.now())
@@ -89,7 +96,7 @@ export default class Tracker {
       href: window.location.href,
       sid: storage.getSessionId() as string,
       scnt: storage.getSessionCount(),
-      set: storage.getSessionEngagementTime(),
+      set: Date.now() - storage.getSessionStartTS(),
       sutm: storage.getSessionUTMParams(),
       ...eventPayload
     }

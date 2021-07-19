@@ -1,4 +1,5 @@
 export const SESSION_EXPIRING_INACTIVITY_TIME_MSEC = 30 * 60 * 1000 // 30 minutes
+export const ENGAGEMENT_TRACKING_INTERVAL_MSEC = 10 * 1000 // 10 seconds
 
 export const LOCAL_STORAGE_SESSION_ID_KEY = 'isdp:sid'
 export const LOCAL_STORAGE_SESSION_COUNT_KEY = 'isdp:scnt'

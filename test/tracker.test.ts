@@ -99,7 +99,7 @@ describe('Tracker', () => {
 
   it('it tracks custom events', () => {
     const testEventName = 'testEvent'
-    Tracker.trackEvent(testEventName)
+    Tracker.captureEvent(testEventName)
     const testEvent = nth(-1, postedTMREventsLog)
     expect(testEvent.goal).toEqual(testEventName)
   })
@@ -108,7 +108,7 @@ describe('Tracker', () => {
     const testEventName = 'testEvent'
     const testEventPayload = { param1: '1', param2: 2 }
     const testEventValue = 40
-    Tracker.trackEvent(testEventName, testEventPayload, testEventValue)
+    Tracker.captureEvent(testEventName, testEventPayload, testEventValue)
     const testEvent = nth(-1, postedTMREventsLog)
     expect(testEvent.goal).toEqual(testEventName)
     expect(testEvent.params).toMatchObject(testEventPayload)
@@ -118,7 +118,7 @@ describe('Tracker', () => {
   it('it updates last interactive event TS after tracking the event', () => {
     const lastInteractiveEventTS = Date.now() - 1
     storage.setLastInterctiveEventTS(lastInteractiveEventTS)
-    Tracker.trackEvent('testEvent')
+    Tracker.captureEvent('testEvent')
     expect(lastInteractiveEventTS !== storage.getLastInteractiveEventTS()).toBeTruthy()
   })
 
@@ -126,7 +126,7 @@ describe('Tracker', () => {
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     const oldSessionId = storage.getSessionId()
-    Tracker.trackEvent('testEvent')
+    Tracker.captureEvent('testEvent')
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(nth(-2, postedTMREventsLog).goal).toEqual('sessionStart')
     expect(nth(-1, postedTMREventsLog).params.sid !== oldSessionId).toBeTruthy()

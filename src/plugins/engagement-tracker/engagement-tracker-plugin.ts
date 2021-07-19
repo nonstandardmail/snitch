@@ -1,14 +1,10 @@
-interface EventTracker {
-  trackEvent(eventName: string): void
-}
-
 export default function engagementTrackerPlugin(
-  eventTracker: EventTracker,
+  tracker: { captureEvent(eventName: string): void },
   options: { engagementTrackingInterval: number }
 ) {
   setInterval(() => {
     if (document.hidden === false) {
-      eventTracker.trackEvent('engage')
+      tracker.captureEvent('engage')
     }
   }, options.engagementTrackingInterval)
 }

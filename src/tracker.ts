@@ -52,7 +52,7 @@ export default class Tracker {
     const shouldStartNewSession =
       deviceHadNoSessionsSoFar || urlHasUTMParams || currentSessionExpired
     if (shouldStartNewSession) this.startNewSession()
-    this.trackEvent('open')
+    this.captureEvent('open')
     locationChangeTrackerPlugin(Tracker)
     engagementTrackerPlugin(Tracker, {
       engagementTrackingInterval:
@@ -102,7 +102,7 @@ export default class Tracker {
     })
   }
 
-  public static trackEvent(
+  public static captureEvent(
     eventName: string,
     eventPayload?: TrackerEventPayload,
     eventValue?: number
@@ -118,7 +118,7 @@ export default class Tracker {
     }
     const previousScreen = this.currentScreen
     this.currentScreen = { screenType, screenId }
-    this.trackEvent('screenChange', {
+    this.captureEvent('screenChange', {
       psct: previousScreen.screenType,
       pscid: previousScreen.screenId
     })

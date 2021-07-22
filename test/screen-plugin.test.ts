@@ -1,6 +1,6 @@
 import screenPlugin from '../src/plugins/screen'
 
-describe('Location plugin', () => {
+describe('Screen plugin', () => {
   const plugin = screenPlugin({ screenType: 'onboarding' })
 
   it('it provides sct and scid event params', async () => {

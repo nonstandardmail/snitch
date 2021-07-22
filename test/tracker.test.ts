@@ -3,6 +3,7 @@ import { nth } from 'ramda'
 import { INIT_ERROR_NO_TMR_COUNTER, SESSION_EXPIRING_INACTIVITY_TIME_MSEC } from '../src/constants'
 import engagementPlugin from '../src/plugins/engagement'
 import locationPlugin from '../src/plugins/location'
+import openPlugin from '../src/plugins/open'
 import screenPlugin from '../src/plugins/screen'
 import sessionPlugin from '../src/plugins/session'
 import * as storage from '../src/storage'
@@ -20,7 +21,8 @@ describe('Tracker', () => {
       engagementTrackingIntervalMsec: 100
     }),
     sessionPlugin(Tracker),
-    screenPlugin({ screenType: 'onboarding', screenId: 'step1' })
+    screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
+    openPlugin(Tracker)
   ]
   it('is initializable', () => {
     expect(Tracker.init).toBeDefined()

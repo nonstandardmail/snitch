@@ -26,7 +26,6 @@ export default class Tracker {
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     this.plugins = options.plugins || []
     this.plugins.forEach(plugin => plugin.onInit?.())
-    this.captureEvent('open')
   }
 
   public static captureEvent(

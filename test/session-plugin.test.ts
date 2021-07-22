@@ -4,7 +4,7 @@ import * as storage from '../src/storage'
 import './util/setup-crypto'
 
 describe('Session plugin', () => {
-  const trackerMock = { captureEvent: (eventName: string) => {} }
+  const trackerMock = { captureEvent: () => {} }
   const plugin = sessionPlugin(trackerMock)
 
   it('it starts new session on init when runs first time on device', () => {
@@ -20,13 +20,12 @@ describe('Session plugin', () => {
   })
 
   it('it provides persisted session details as event params', async () => {
-    const now = Date.now()
-    expect(plugin.getEventParams()).toEqual({
+    expect(plugin.getEventParams()).toMatchObject({
       sid: storage.getSessionId(),
       scnt: storage.getSessionCount(),
-      sutm: storage.getSessionUTMParams(),
-      set: now - storage.getSessionStartTS()
+      sutm: storage.getSessionUTMParams()
     })
+    expect(plugin.getEventParams().set).toBeDefined()
   })
 
   it('it starts a new session on init if utm params are set', () => {

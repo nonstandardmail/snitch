@@ -14,6 +14,6 @@ describe('Open plugin', () => {
   })
 
   it('it provides oid event param', async () => {
-    expect(plugin.getEventParams().oid).toBeDefined()
+    expect(plugin.getEventPayloadParams().oid).toBeDefined()
   })
 })

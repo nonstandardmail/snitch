@@ -1,5 +1,5 @@
 import { TrackerEventPayload } from '../tracker'
-import { BeforeCaptureEventHandler, ParamsProvider } from './plugin-interfaces'
+import { BeforeCaptureEventHandler, EventPayloadParamsProvider } from './plugin-interfaces'
 
 type Screen = {
   screenType: string
@@ -8,12 +8,12 @@ type Screen = {
 
 export default function screenPlugin(
   initialScreen: Screen
-): ParamsProvider & BeforeCaptureEventHandler {
+): EventPayloadParamsProvider & BeforeCaptureEventHandler {
   let previousScreen: Screen | null = null
   let currentScreen = initialScreen
 
   return {
-    getEventParams() {
+    getEventPayloadParams() {
       return {
         sct: currentScreen.screenType,
         scid: currentScreen.screenId || ''

@@ -18,6 +18,6 @@ describe('Location plugin', () => {
   })
 
   it('it provides href event param', async () => {
-    expect(plugin.getEventParams()).toEqual({ href: window.location.href })
+    expect(plugin.getEventPayloadParams()).toEqual({ href: window.location.href })
   })
 })

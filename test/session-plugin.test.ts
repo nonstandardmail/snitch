@@ -20,12 +20,12 @@ describe('Session plugin', () => {
   })
 
   it('it provides persisted session details as event params', async () => {
-    expect(plugin.getEventParams()).toMatchObject({
+    expect(plugin.getEventPayloadParams()).toMatchObject({
       sid: storage.getSessionId(),
       scnt: storage.getSessionCount(),
       sutm: storage.getSessionUTMParams()
     })
-    expect(plugin.getEventParams().set).toBeDefined()
+    expect(plugin.getEventPayloadParams().set).toBeDefined()
   })
 
   it('it starts a new session on init if utm params are set', () => {

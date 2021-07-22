@@ -25,10 +25,14 @@ export default class Tracker {
     this.appVersion = options.appVersion || ''
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     this.plugins = options.plugins || []
+    this.callInitializationHandlers()
+  }
+
+  private static callInitializationHandlers() {
     this.plugins.forEach(plugin => plugin.onInit?.())
   }
 
-  public static captureEvent(
+  private static callBeforeCaptureEventHandlers(
     eventName: string,
     eventPayload?: TrackerEventPayload,
     eventValue?: number
@@ -36,16 +40,28 @@ export default class Tracker {
     this.plugins.forEach(plugin => {
       plugin.beforeCaptureEvent?.(eventName, eventPayload, eventValue)
     })
-    const params = this.plugins.reduce(
+  }
+
+  private static callEventPayloadProviders(eventPayload: TrackerEventPayload) {
+    return this.plugins.reduce(
       (params, plugin) => ({
         ...params,
-        ...(plugin.getEventParams?.() || {})
+        ...(plugin.getEventPayloadParams?.() || {})
       }),
-      {
-        tiid: this.trackerInstanceId,
-        ...eventPayload
-      }
+      eventPayload
     )
+  }
+
+  public static captureEvent(
+    eventName: string,
+    eventPayload?: TrackerEventPayload,
+    eventValue?: number
+  ) {
+    this.callBeforeCaptureEventHandlers(eventName, eventPayload, eventValue)
+    const params = this.callEventPayloadProviders({
+      tiid: this.trackerInstanceId,
+      ...eventPayload
+    })
     window._tmr.push({
       id: this.tmrCounterId,
       type: 'reachGoal',

@@ -1,7 +1,7 @@
 import { TrackerEventPayload } from '../tracker'
 
-export interface ParamsProvider {
-  getEventParams(): { [key: string]: string | number }
+export interface EventPayloadParamsProvider {
+  getEventPayloadParams(): { [key: string]: string | number }
 }
 
 export interface InitializationHandler {
@@ -16,4 +16,6 @@ export interface BeforeCaptureEventHandler {
   ): void
 }
 
-export type Plugin = Partial<ParamsProvider & InitializationHandler & BeforeCaptureEventHandler>
+export type Plugin = Partial<
+  EventPayloadParamsProvider & InitializationHandler & BeforeCaptureEventHandler
+>

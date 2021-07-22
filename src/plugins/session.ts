@@ -4,8 +4,8 @@ import * as storage from '../storage'
 import * as utm from '../utm'
 import {
   BeforeCaptureEventHandler,
-  InitializationHandler,
-  ParamsProvider
+  EventPayloadParamsProvider,
+  InitializationHandler
 } from './plugin-interfaces'
 /**
  * New session starts:
@@ -18,7 +18,7 @@ import {
  */
 export default function sessionPlugin(tracker: {
   captureEvent(eventName: string, eventPayload?: { phref: string }): void
-}): InitializationHandler & BeforeCaptureEventHandler & ParamsProvider {
+}): InitializationHandler & BeforeCaptureEventHandler & EventPayloadParamsProvider {
   function isSessionExpired(): boolean {
     return Date.now() - storage.getLastInteractiveEventTS() > SESSION_EXPIRING_INACTIVITY_TIME_MSEC
   }
@@ -51,7 +51,7 @@ export default function sessionPlugin(tracker: {
       storage.setLastInterctiveEventTS(Date.now())
     },
 
-    getEventParams() {
+    getEventPayloadParams() {
       return {
         sid: storage.getSessionId() as string,
         scnt: storage.getSessionCount(),

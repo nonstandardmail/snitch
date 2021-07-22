@@ -1,12 +1,12 @@
 import createUniqueId from '../create-unique-id'
-import { InitializationHandler, ParamsProvider } from './plugin-interfaces'
+import { EventPayloadParamsProvider, InitializationHandler } from './plugin-interfaces'
 
 export default function locationPlugin(tracker: {
   captureEvent(eventName: string, eventParams: { ref: string; ifr: string }): void
-}): InitializationHandler & ParamsProvider {
+}): InitializationHandler & EventPayloadParamsProvider {
   const openId = createUniqueId()
   return {
-    getEventParams() {
+    getEventPayloadParams() {
       return {
         oid: openId
       }

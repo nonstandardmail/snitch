@@ -1,5 +1,5 @@
-import createUniqueId from '../src/create-unique-id'
-import './util/setup-crypto'
+import '../common/testutil/setup-crypto'
+import createUniqueId from './create-unique-id'
 
 describe('#createUniqueId', () => {
   it('it creates unique id', () => {

@@ -1,4 +1,4 @@
-import * as utm from '../src/utm'
+import * as utm from './utm'
 
 describe('#stringifyCompact', () => {
   it('is stringifies utm parmas from url', () => {

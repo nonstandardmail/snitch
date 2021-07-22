@@ -1,12 +1,14 @@
 import delay from 'delay'
-import engagementTrackerPlugin from '../src/plugins/engagement-tracker/engagement-tracker-plugin'
+import engagementPlugin from './engagement'
 
-describe('Tracker', () => {
+describe('Engagement plugin', () => {
   it('it sends engagement events periodically', async () => {
     const captureEvent = jest.fn()
     const trackerMock = { captureEvent }
-    engagementTrackerPlugin(trackerMock, { engagementTrackingInterval: 100 })
+    engagementPlugin(trackerMock, 100)
     await delay(250)
+    // sends 'engage' events
     expect(captureEvent).toBeCalledTimes(2)
+    expect(captureEvent).toHaveBeenCalledWith('engage')
   })
 })

@@ -1,4 +1,4 @@
-import { TMRCounter } from '../../src/tmr-counter'
+import { TMRCounter } from '../../snitch/tmr-counter'
 
 type PostedEventsLog = any[]
 

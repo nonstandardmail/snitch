@@ -1,5 +1,5 @@
 import delay from 'delay'
-import listenForLocationChange from '../src/listen-for-location-change'
+import listenForLocationChange from './listen-for-location-change'
 
 describe('#listenForLocationChange', () => {
   it('invokes callback for location changes', async () => {

@@ -1,11 +1,13 @@
+import { ENGAGEMENT_TRACKING_INTERVAL_MSEC } from '../constants'
+
 export default function engagementPlugin(
   tracker: { captureEvent(eventName: string): void },
-  options: { engagementTrackingIntervalMsec: number }
+  engagementTrackingIntervalMsec: number = ENGAGEMENT_TRACKING_INTERVAL_MSEC
 ) {
   setInterval(() => {
     if (document.hidden === false) {
       tracker.captureEvent('engage')
     }
-  }, options.engagementTrackingIntervalMsec)
+  }, engagementTrackingIntervalMsec)
   return {}
 }

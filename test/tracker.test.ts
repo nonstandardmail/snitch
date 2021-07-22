@@ -17,9 +17,7 @@ const TEST_APP_VERSION = '1.0.0'
 describe('Tracker', () => {
   const plugins = [
     locationPlugin(Tracker, true),
-    engagementPlugin(Tracker, {
-      engagementTrackingIntervalMsec: 100
-    }),
+    engagementPlugin(Tracker, 100),
     sessionPlugin(Tracker),
     screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
     openPlugin(Tracker)

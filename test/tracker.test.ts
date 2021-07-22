@@ -1,10 +1,10 @@
 import delay from 'delay'
 import { nth } from 'ramda'
-import {
-  ERROR_SCREEN_TRACKING_DISABLED,
-  INIT_ERROR_NO_TMR_COUNTER,
-  SESSION_EXPIRING_INACTIVITY_TIME_MSEC
-} from '../src/constants'
+import { INIT_ERROR_NO_TMR_COUNTER, SESSION_EXPIRING_INACTIVITY_TIME_MSEC } from '../src/constants'
+import engagementPlugin from '../src/plugins/engagement'
+import locationPlugin from '../src/plugins/location'
+import screenPlugin from '../src/plugins/screen'
+import sessionPlugin from '../src/plugins/session'
 import * as storage from '../src/storage'
 import Tracker from '../src/tracker'
 import './util/setup-crypto'
@@ -14,18 +14,26 @@ const TEST_COUNTER_ID = '3221421'
 const TEST_APP_VERSION = '1.0.0'
 
 describe('Tracker', () => {
+  const plugins = [
+    locationPlugin(Tracker),
+    engagementPlugin(Tracker, {
+      engagementTrackingIntervalMsec: 100
+    }),
+    sessionPlugin(Tracker),
+    screenPlugin({ screenType: 'onboarding', screenId: 'step1' })
+  ]
   it('is initializable', () => {
     expect(Tracker.init).toBeDefined()
   })
 
   it('it throws error when no window._tmr defined', () => {
-    const initWithNoTMRCounter = () => Tracker.init({ tmrCounterId: TEST_COUNTER_ID })
+    const initWithNoTMRCounter = () => Tracker.init({ tmrCounterId: TEST_COUNTER_ID, plugins })
     expect(initWithNoTMRCounter).toThrow(INIT_ERROR_NO_TMR_COUNTER)
   })
 
   it('it starts a new session on first init', () => {
     window._tmr = tmrCounterMock
-    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION, plugins })
     // persists session details
     const sessionId = storage.getSessionId()
     const lastInteractiveEventTS = storage.getLastInteractiveEventTS()
@@ -54,7 +62,7 @@ describe('Tracker', () => {
 
   it('it still sends an "open" event on init if new session is not created', () => {
     const sessionId = storage.getSessionId()
-    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION, plugins })
     // does not start a new session
     expect(storage.getSessionId()).toEqual(sessionId)
     expect(storage.getSessionCount()).toEqual(1)
@@ -67,7 +75,7 @@ describe('Tracker', () => {
   it('it starts a new session on init if utm params are set and sends them with TMR events', () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
-    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION, plugins })
     // persists new session details with utm param values
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
@@ -85,7 +93,7 @@ describe('Tracker', () => {
     const oldSessionId = storage.getSessionId()
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
-    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION })
+    Tracker.init({ tmrCounterId: TEST_COUNTER_ID, appVersion: TEST_APP_VERSION, plugins })
     // persists new session details
     const newSessionId = storage.getSessionId()
     expect(newSessionId !== oldSessionId).toBeTruthy()
@@ -136,7 +144,7 @@ describe('Tracker', () => {
     Tracker.init({
       tmrCounterId: TEST_COUNTER_ID,
       appVersion: TEST_APP_VERSION,
-      currentScreen: { screenType: 'onboarding', screenId: 'step1' }
+      plugins
     })
     const sessionStartEvent = nth(-2, postedTMREventsLog)
     expect(sessionStartEvent.goal).toEqual('sessionStart')
@@ -146,21 +154,13 @@ describe('Tracker', () => {
     expect(openEvent.goal).toEqual('open')
     expect(openEvent.params.sct).toEqual('onboarding')
     expect(openEvent.params.scid).toEqual('step1')
-    Tracker.setCurrentScreen('catalogue')
+    Tracker.captureEvent('screenChange', { screenType: 'catalogue' })
     const screenChangeEvent = nth(-1, postedTMREventsLog)
     expect(screenChangeEvent.goal).toEqual('screenChange')
     expect(screenChangeEvent.params.sct).toEqual('catalogue')
     expect(screenChangeEvent.params.scid).toEqual('')
     expect(screenChangeEvent.params.psct).toEqual('onboarding')
     expect(screenChangeEvent.params.pscid).toEqual('step1')
-  })
-
-  it('it throws error on setCurrentScreen call if was initialized with no currentScreen option', () => {
-    Tracker.init({
-      tmrCounterId: TEST_COUNTER_ID,
-      appVersion: TEST_APP_VERSION
-    })
-    expect(() => Tracker.setCurrentScreen('catalogue')).toThrowError(ERROR_SCREEN_TRACKING_DISABLED)
   })
 
   it('it tracks location changes by sending locationChange event', async () => {
@@ -184,7 +184,7 @@ describe('Tracker', () => {
     Tracker.init({
       tmrCounterId: TEST_COUNTER_ID,
       appVersion: TEST_APP_VERSION,
-      engagementTrackingIntervalMsec: 100
+      plugins
     })
     await delay(250)
     expect(nth(-1, postedTMREventsLog).goal).toEqual('engage')

@@ -9,4 +9,3 @@ export const LOCAL_STORAGE_SESSION_START_TS_KEY = 'isdp:ssts'
 
 export const INIT_ERROR_NO_TMR_COUNTER = 'initErrorNoTMRCounter'
 export const INIT_ERROR_NO_TMR_COUNTER_ID = 'initErrorNoTMRCounterId'
-export const ERROR_SCREEN_TRACKING_DISABLED = 'errorScreenTrackingDisabled'

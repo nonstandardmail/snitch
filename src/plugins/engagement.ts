@@ -1,10 +1,11 @@
-export default function engagementTrackerPlugin(
+export default function engagementPlugin(
   tracker: { captureEvent(eventName: string): void },
-  options: { engagementTrackingInterval: number }
+  options: { engagementTrackingIntervalMsec: number }
 ) {
   setInterval(() => {
     if (document.hidden === false) {
       tracker.captureEvent('engage')
     }
-  }, options.engagementTrackingInterval)
+  }, options.engagementTrackingIntervalMsec)
+  return {}
 }

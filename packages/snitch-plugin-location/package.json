@@ -1,0 +1,15 @@
+{
+  "name": "@mrgis/snitch-plugin-location",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/lib/snitch-plugin-location/index.js",
+  "typings": "dist/types/snitch-plugin-location/index.d.ts",
+  "files": [ "dist" ],
+  "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nonstandardmail/snitch.git"
+  },
+  "license": "MIT"
+}

@@ -18,31 +18,31 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --theme minimal src",
+    "lint": "tslint --project tsconfig.json -t codeFrame 'packages/**/*.ts'",
+    "prebuild": "rimraf packages/*/dist",
+    "build": "find ./packages -type f -name \"tsconfig.json\" -exec npx tsc --module commonjs -p {} \\;",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
-    "test:prod": "npm run lint && npm run test -- --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish"
+    "test:prod": "npm run lint && npm run test -- --no-cache"
   },
   "jest": {
     "transform": {
       "^.+\\.[tj]s$": "ts-jest"
     },
     "testEnvironment": "jsdom",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "testMatch": [
+      "**/*.test.ts"
+    ],
     "moduleFileExtensions": [
       "ts",
       "js"
     ],
     "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
+      "/node_modules/"
     ],
     "collectCoverageFrom": [
-      "src/*.{js,ts}"
+      "packages/**/*.ts"
     ]
   },
   "prettier": {
@@ -59,6 +59,7 @@
     "delay": "^5.0.0",
     "jest": "^27.0.6",
     "jsdom": "^16.6.0",
+    "lerna": "^4.0.0",
     "prettier": "^1.14.3",
     "ramda": "^0.27.1",
     "rimraf": "^2.6.2",

@@ -1,9 +1,12 @@
 import listenForLocationChange from '../listen-for-location-change'
 import { InitializationHandler, ParamsProvider } from './plugin-interfaces'
 
-export default function locationPlugin(tracker: {
-  captureEvent(eventName: string, eventParams: { phref: string }): void
-}): ParamsProvider & InitializationHandler {
+export default function locationPlugin(
+  tracker: {
+    captureEvent(eventName: string, eventParams: { phref: string }): void
+  },
+  captureLocationChanges: boolean = false
+): ParamsProvider & InitializationHandler {
   return {
     onInit() {
       let currentLocation = window.location.href
@@ -14,7 +17,9 @@ export default function locationPlugin(tracker: {
           currentLocation = window.location.href
         }
       }
-      listenForLocationChange(locationChangeHandler)
+      if (captureLocationChanges) {
+        listenForLocationChange(locationChangeHandler)
+      }
     },
     getEventParams() {
       return {

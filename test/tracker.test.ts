@@ -16,7 +16,7 @@ const TEST_APP_VERSION = '1.0.0'
 
 describe('Tracker', () => {
   const plugins = [
-    locationPlugin(Tracker),
+    locationPlugin(Tracker, true),
     engagementPlugin(Tracker, {
       engagementTrackingIntervalMsec: 100
     }),

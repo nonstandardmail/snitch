@@ -1,6 +1,6 @@
 {
   "name": "@mrgis/snitch-plugin-engagement",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-engagement/index.js",

@@ -10,7 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
         with:
-          ref: master
+          fetch-depth: "0"
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - uses: actions/setup-node@v1
         with:
           node-version: 10
@@ -20,4 +21,4 @@ jobs:
       - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: lerna publish
+      - run: npm run publish

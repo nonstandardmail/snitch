@@ -20,7 +20,7 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json -t codeFrame 'packages/**/*.ts'",
     "prebuild": "rimraf packages/*/dist",
-    "build": "find ./packages -type f -name \"tsconfig.json\" -exec npx tsc --module commonjs -p {} \\;",
+    "build": "find ./packages -type f -name \"tsconfig.json\" -exec npx tsc --module commonjs -p {} \\; && find ./packages -type f -name \"rollup.config.ts\" -exec rollup -c {} \\;",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
@@ -51,10 +51,11 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-multi-entry": "^4.0.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/jest": "^23.3.2",
-    "@types/node": "^10.11.0",
+    "@types/node": "^10.17.60",
     "@types/ramda": "^0.27.44",
     "delay": "^5.0.0",
     "jest": "^27.0.6",

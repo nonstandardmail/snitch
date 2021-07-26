@@ -1,6 +1,6 @@
 {
-  "name": "@mrgis/snitch-debug-logger",
-  "version": "0.0.2",
+  "name": "@mrgis/snitch-plugin-debug-logger",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-debug-logger/index.js",

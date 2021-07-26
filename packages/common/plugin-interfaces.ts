@@ -1,11 +1,11 @@
-import { TrackerEventPayload } from './tracker-event-payload-type'
+import { TrackerEventPayload, TrackerInitializationOptions } from './tracker-interfaces'
 
 export interface EventPayloadParamsProvider {
   getEventPayloadParams(): { [key: string]: string | number }
 }
 
 export interface InitializationHandler {
-  onInit(): void
+  onInit(options: TrackerInitializationOptions): void
 }
 
 export interface BeforeCaptureEventHandler {

@@ -2,14 +2,8 @@ export const INIT_ERROR_NO_TMR_COUNTER = 'initErrorNoTMRCounter'
 export const INIT_ERROR_NO_TMR_COUNTER_ID = 'initErrorNoTMRCounterId'
 import createUniqueId from '../common/create-unique-id'
 import { Plugin } from '../common/plugin-interfaces'
-import { TrackerEventPayload } from '../common/tracker-event-payload-type'
+import { TrackerEventPayload, TrackerInitializationOptions } from '../common/tracker-interfaces'
 import './tmr-counter'
-
-type TrackerInitializationOptions = {
-  tmrCounterId: string
-  appVersion?: string
-  plugins?: Array<Plugin>
-}
 
 export default class Tracker {
   private static tmrCounterId: string
@@ -24,11 +18,11 @@ export default class Tracker {
     this.appVersion = options.appVersion || ''
     this.trackerInstanceId = this.trackerInstanceId || createUniqueId()
     this.plugins = options.plugins || []
-    this.callInitializationHandlers()
+    this.callInitializationHandlers(options)
   }
 
-  private static callInitializationHandlers() {
-    this.plugins.forEach(plugin => plugin.onInit?.())
+  private static callInitializationHandlers(initializationOptions: TrackerInitializationOptions) {
+    this.plugins.forEach(plugin => plugin.onInit?.(initializationOptions))
   }
 
   private static callBeforeCaptureEventHandlers(

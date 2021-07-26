@@ -1,5 +1,5 @@
 import { BeforeCaptureEventHandler, EventPayloadParamsProvider } from '../common/plugin-interfaces'
-import { TrackerEventPayload } from '../common/tracker-event-payload-type'
+import { TrackerEventPayload } from '../common/tracker-interfaces'
 
 type Screen = {
   screenType: string

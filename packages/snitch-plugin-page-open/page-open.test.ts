@@ -6,7 +6,7 @@ describe('Open plugin', () => {
   const plugin = openPlugin(trackerMock)
 
   it('sends open event on init', () => {
-    plugin.onInit()
+    plugin.onInit({ tmrCounterId: '', appVersion: '0.0.0' })
     expect(trackerMock.captureEvent).toHaveBeenCalledWith('open', {
       ifr: (window.self !== window.top).toString(),
       ref: window.document.referrer

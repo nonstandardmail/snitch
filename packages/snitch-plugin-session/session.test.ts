@@ -5,10 +5,11 @@ import * as storage from './storage'
 describe('Session plugin', () => {
   const trackerMock = { captureEvent: () => {} }
   const plugin = sessionPlugin(trackerMock)
+  const initializationOptions = { tmrCounterId: '', appVersion: '0.0.0' }
 
   it('it starts new session on init when runs first time on device', () => {
     trackerMock.captureEvent = jest.fn()
-    plugin.onInit()
+    plugin.onInit(initializationOptions)
     // persists session details
     expect(storage.getSessionId()).toBeTruthy()
     expect(storage.getLastInteractiveEventTS()).toBeTruthy()
@@ -31,7 +32,7 @@ describe('Session plugin', () => {
     trackerMock.captureEvent = jest.fn()
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
-    plugin.onInit()
+    plugin.onInit(initializationOptions)
     // persists new session details with utm param values
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
@@ -46,7 +47,7 @@ describe('Session plugin', () => {
     const oldSessionId = storage.getSessionId()
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
-    plugin.onInit()
+    plugin.onInit(initializationOptions)
     // captures sessionStart event
     expect(trackerMock.captureEvent).toBeCalledWith('sessionStart')
     // persists new session details
@@ -57,7 +58,7 @@ describe('Session plugin', () => {
   it('it does not start new session on init if there is no need to', () => {
     trackerMock.captureEvent = jest.fn()
     const oldSessionId = storage.getSessionId()
-    plugin.onInit()
+    plugin.onInit(initializationOptions)
     // does not capture session start event
     expect(trackerMock.captureEvent).not.toHaveBeenCalled()
     // persists session details stay the same

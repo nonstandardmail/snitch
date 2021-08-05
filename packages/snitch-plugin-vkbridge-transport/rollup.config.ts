@@ -8,7 +8,7 @@ export default {
   input: joinPath(__dirname, 'index.ts'),
   output: {
     file: joinPath(__dirname, 'dist/iife.min.js'),
-    name: 'snitchPluginTopmailruTransport',
+    name: 'snitchPluginVKBridgeTransport',
     format: 'iife',
     sourcemap: false
   },

@@ -1,10 +1,10 @@
 {
-  "name": "@mrgis/snitch-plugin-topmailru-transport",
-  "version": "0.0.3",
+  "name": "@mrgis/snitch-plugin-vkbridge-transport",
+  "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/lib/snitch-plugin-topmailru-transport/index.js",
-  "typings": "dist/types/snitch-plugin-topmailru-transport/index.d.ts",
+  "main": "dist/lib/snitch-plugin-vkbridge-transport/index.js",
+  "typings": "dist/types/snitch-plugin-vkbridge-transport/index.d.ts",
   "files": [ "dist" ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {

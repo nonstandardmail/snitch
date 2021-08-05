@@ -6,7 +6,7 @@ describe('Location plugin', () => {
   const trackerMock = { captureEvent }
   window.history.pushState({}, '', '/page1')
   const plugin = locationPlugin(trackerMock, true)
-  plugin.onInit({ tmrCounterId: '', appVersion: '0.0.0' })
+  plugin.onInit({ plugins: [] })
 
   it('it sends locationChange events', async () => {
     window.history.pushState({}, '', '/page2')

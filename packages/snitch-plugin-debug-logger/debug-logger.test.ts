@@ -5,7 +5,7 @@ describe('debugLogger plugin', () => {
 
   it('it logs tracker initialization options', async () => {
     console.log = jest.fn()
-    plugin.onInit({ tmrCounterId: '', appVersion: '0.0.0' })
+    plugin.onInit({ plugins: [] })
     expect(console.log).toBeCalledTimes(2)
   })
 

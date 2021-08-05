@@ -2,7 +2,6 @@ import { EventTransport, InitializationHandler } from '../common/plugin-interfac
 import { TrackerEventPayload } from '../common/tracker-interfaces'
 import './_tmr'
 
-export const ERROR_NO_TMR_COUNTER = 'initErrorNoTMRCounter'
 export const ERROR_NO_TMR_COUNTER_ID = 'initErrorNoTMRCounterId'
 
 export default function tmrTransportPlugin(
@@ -11,7 +10,7 @@ export default function tmrTransportPlugin(
   if (!topmailruCounterId) throw TypeError(ERROR_NO_TMR_COUNTER_ID)
   return {
     onInit() {
-      if (!window._tmr) throw Error(ERROR_NO_TMR_COUNTER)
+      if (!window._tmr) window._tmr = []
     },
 
     sendEvent(eventName: string, eventParams?: TrackerEventPayload, eventValue?: number) {

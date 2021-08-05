@@ -1,6 +1,13 @@
 declare global {
   interface Window {
-    _tmr: TMRCounter
+    _tmr:
+      | TMRCounter
+      | Array<
+          | TMRInstructionSendCustomEvent
+          | TMRInstructionSetUserId
+          | TMRInstructionUnsetUserId
+          | TMRInstructionSetOnReadyCallback
+        >
   }
 }
 

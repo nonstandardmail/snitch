@@ -5,7 +5,7 @@ import * as storage from './storage'
 describe('Session plugin', () => {
   const trackerMock = { captureEvent: () => {} }
   const plugin = sessionPlugin(trackerMock)
-  const initializationOptions = { tmrCounterId: '', appVersion: '0.0.0' }
+  const initializationOptions = { plugins: [] }
 
   it('it starts new session on init when runs first time on device', () => {
     trackerMock.captureEvent = jest.fn()

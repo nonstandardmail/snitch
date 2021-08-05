@@ -5,7 +5,5 @@ export type TrackerEventPayload = {
 }
 
 export type TrackerInitializationOptions = {
-  tmrCounterId: string
-  appVersion?: string
   plugins?: Array<Plugin>
 }

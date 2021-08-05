@@ -16,6 +16,14 @@ export interface BeforeCaptureEventHandler {
   ): void
 }
 
+export interface EventTransport {
+  sendEvent(
+    eventName: string,
+    eventParams?: TrackerEventPayload,
+    eventValue?: string | number
+  ): void
+}
+
 export type Plugin = Partial<
-  EventPayloadParamsProvider & InitializationHandler & BeforeCaptureEventHandler
+  EventPayloadParamsProvider & InitializationHandler & BeforeCaptureEventHandler & EventTransport
 >

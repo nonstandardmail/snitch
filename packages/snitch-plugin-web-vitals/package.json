@@ -1,0 +1,20 @@
+{
+  "name": "@mrgis/snitch-plugin-web-vitals",
+  "version": "0.0.1",
+  "description": "Web Vitals tracking with Snitch",
+  "keywords": [],
+  "main": "dist/lib/snitch-plugin-web-vitals/index.js",
+  "typings": "dist/types/snitch-plugin-web-vitals/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nonstandardmail/snitch.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "web-vitals": "^2.1.0"
+  }
+}

@@ -8,9 +8,9 @@ export default function exceptionsPlugin(tracker: {
     tracker.captureEvent('uncaughtError', {
       message: errorEvent.message,
       filename: errorEvent.filename,
-      lineno: errorEvent.lineno.toString(),
-      colno: errorEvent.colno.toString(),
-      error: errorEvent.error.toString()
+      lineno: errorEvent.lineno?.toString(),
+      colno: errorEvent.colno?.toString(),
+      error: errorEvent.error?.toString()
     })
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@mrgis/snitch-plugin-exceptions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Exception tracking with Snitch",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-exceptions/index.js",

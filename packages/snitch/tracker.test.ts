@@ -3,8 +3,8 @@ import { nth } from 'ramda'
 import Tracker from '.'
 import '../common/testutil/setup-crypto'
 import engagementPlugin from '../snitch-plugin-engagement'
+import launchPlugin from '../snitch-plugin-launch'
 import locationPlugin from '../snitch-plugin-location'
-import pageOpenPlugin from '../snitch-plugin-page-open'
 import screenPlugin from '../snitch-plugin-screens'
 import sessionPlugin from '../snitch-plugin-session'
 import { SESSION_EXPIRING_INACTIVITY_TIME_MSEC } from '../snitch-plugin-session/session'
@@ -22,7 +22,7 @@ describe('Tracker', () => {
     engagementPlugin(Tracker, 100),
     sessionPlugin(Tracker),
     screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
-    pageOpenPlugin(Tracker),
+    launchPlugin(Tracker),
     topmailruTransportPlugin(TEST_COUNTER_ID)
   ]
   it('is initializable', () => {
@@ -57,15 +57,15 @@ describe('Tracker', () => {
     expect(sessionStartEvent.params.set >= 0).toBeTruthy()
   })
 
-  it('it still sends an "open" event on init if new session is not created', () => {
+  it('it still sends an "launch" event on init if new session is not created', () => {
     const sessionId = storage.getSessionId()
     Tracker.init({ plugins })
     // does not start a new session
     expect(storage.getSessionId()).toEqual(sessionId)
     expect(storage.getSessionCount()).toEqual(1)
-    // 'open' event is sent
+    // 'launch' event is sent
     const openEvent = nth(-1, postedTopmailruEventsLog)
-    expect(openEvent.goal).toEqual('open')
+    expect(openEvent.goal).toEqual('launch')
     expect(openEvent.params.sid).toEqual(sessionId)
   })
 
@@ -144,7 +144,7 @@ describe('Tracker', () => {
     expect(sessionStartEvent.params.sct).toEqual('onboarding')
     expect(sessionStartEvent.params.scid).toEqual('step1')
     const openEvent = nth(-1, postedTopmailruEventsLog)
-    expect(openEvent.goal).toEqual('open')
+    expect(openEvent.goal).toEqual('launch')
     expect(openEvent.params.sct).toEqual('onboarding')
     expect(openEvent.params.scid).toEqual('step1')
     Tracker.captureEvent('screenChange', { screenType: 'catalogue' })

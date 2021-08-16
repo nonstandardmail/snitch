@@ -1,10 +1,10 @@
 {
-  "name": "@mrgis/snitch-plugin-page-open",
-  "version": "0.0.2",
+  "name": "@mrgis/snitch-plugin-launch",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "main": "dist/lib/snitch-plugin-page-open/index.js",
-  "typings": "dist/types/snitch-plugin-page-open/index.d.ts",
+  "main": "dist/lib/snitch-plugin-launch/index.js",
+  "typings": "dist/types/snitch-plugin-launch/index.d.ts",
   "files": [ "dist" ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {

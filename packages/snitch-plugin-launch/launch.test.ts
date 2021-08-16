@@ -1,5 +1,5 @@
 import '../common/testutil/setup-crypto'
-import openPlugin from './page-open'
+import openPlugin from './launch'
 
 describe('Open plugin', () => {
   const trackerMock = { captureEvent: jest.fn() }
@@ -7,13 +7,13 @@ describe('Open plugin', () => {
 
   it('sends open event on init', () => {
     plugin.onInit({ plugins: [] })
-    expect(trackerMock.captureEvent).toHaveBeenCalledWith('open', {
+    expect(trackerMock.captureEvent).toHaveBeenCalledWith('launch', {
       ifr: (window.self !== window.top).toString(),
       ref: window.document.referrer
     })
   })
 
-  it('it provides oid event param', async () => {
-    expect(plugin.getEventPayloadParams().oid).toBeDefined()
+  it('it provides lid event param', async () => {
+    expect(plugin.getEventPayloadParams().lid).toBeDefined()
   })
 })

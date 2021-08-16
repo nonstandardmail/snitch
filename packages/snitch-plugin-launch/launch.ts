@@ -4,15 +4,15 @@ import { EventPayloadParamsProvider, InitializationHandler } from '../common/plu
 export default function locationPlugin(tracker: {
   captureEvent(eventName: string, eventParams: { ref: string; ifr: string }): void
 }): InitializationHandler & EventPayloadParamsProvider {
-  const openId = createUniqueId()
+  const launchId = createUniqueId()
   return {
     getEventPayloadParams() {
       return {
-        oid: openId
+        lid: launchId
       }
     },
     onInit() {
-      tracker.captureEvent('open', {
+      tracker.captureEvent('launch', {
         ref: document.referrer,
         ifr: (window.self !== window.top).toString()
       })

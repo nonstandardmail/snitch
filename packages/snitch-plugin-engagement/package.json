@@ -1,10 +1,10 @@
 {
   "name": "@mrgis/snitch-plugin-engagement",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "keywords": [],
-  "main": "dist/lib/index.js",
-  "typings": "dist/types/index.d.ts",
+  "main": "dist/lib/snitch-plugin-engagement/index.js",
+  "typings": "dist/types/snitch-plugin-engagement/index.d.ts",
   "files": [ "dist" ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {

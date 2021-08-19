@@ -1,6 +1,6 @@
 {
   "name": "@mrgis/snitch-plugin-session",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-session/index.js",

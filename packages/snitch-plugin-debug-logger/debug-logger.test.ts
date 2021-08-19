@@ -5,8 +5,8 @@ describe('debugLogger plugin', () => {
 
   it('it logs tracker initialization options', async () => {
     console.log = jest.fn()
-    plugin.onInit({ plugins: [] })
-    expect(console.log).toBeCalledTimes(2)
+    plugin.onInit()
+    expect(console.log).toBeCalledTimes(1)
   })
 
   it('it logs capture event call', async () => {

@@ -4,22 +4,30 @@ import createUniqueId from '../common/create-unique-id'
 import {
   BeforeCaptureEventHandler,
   EventPayloadParamsProvider,
+  EventSource,
   InitializationHandler
 } from '../common/plugin-interfaces'
+import { EventHandler } from '../common/tracker-interfaces'
 import * as storage from './storage'
 import * as utm from './utm'
+
 /**
+ * Plugin uses localStorage to persist session’s state
+ *
  * New session starts:
  *  1) on init in following cases:
  *    - there is no persisted session
  *    - persisted session is stale
  *    - there is utm parameters in url
- *  2) before any tracker's captureEvent call
+ *  2) before any captureEvent call
  *    if persisted session is stale
  */
-export default function sessionPlugin(tracker: {
-  captureEvent(eventName: string, eventPayload?: { phref: string }): void
-}): InitializationHandler & BeforeCaptureEventHandler & EventPayloadParamsProvider {
+export default function sessionPlugin(): InitializationHandler &
+  BeforeCaptureEventHandler &
+  EventPayloadParamsProvider &
+  EventSource {
+  let captureEvent: EventHandler
+
   function isSessionExpired(): boolean {
     return Date.now() - storage.getLastInteractiveEventTS() > SESSION_EXPIRING_INACTIVITY_TIME_MSEC
   }
@@ -30,10 +38,14 @@ export default function sessionPlugin(tracker: {
     storage.setSessionUTMParams(utm.stringifyCompact(location.href))
     storage.incrementSessionCount()
     storage.setLastInterctiveEventTS(Date.now())
-    tracker.captureEvent('sessionStart')
+    captureEvent('sessionStart')
   }
 
   return {
+    setEventHandler(eventHandler: EventHandler) {
+      captureEvent = eventHandler
+    },
+
     onInit() {
       const deviceHadNoSessionsSoFar = storage.getSessionId() === null
       const urlHasUTMParams = utm.urlHasParams(window.location.href)

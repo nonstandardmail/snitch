@@ -1,10 +1,11 @@
 import delay from 'delay'
 import exceptionsPlugin from './exceptions'
 
-describe('Location plugin', () => {
+describe('Exceptions plugin', () => {
   const captureEvent = jest.fn()
-  const trackerMock = { captureEvent }
-  exceptionsPlugin(trackerMock).onInit({})
+  const plugin = exceptionsPlugin()
+  plugin.onInit()
+  plugin.setEventHandler(captureEvent)
 
   // make node process to not to exit on errors
   window.addEventListener('error', event => event.preventDefault())
@@ -18,7 +19,7 @@ describe('Location plugin', () => {
       error: 'Error: test',
       message: 'test',
       filename: __filename,
-      lineno: '14',
+      lineno: '15',
       colno: '13'
     })
   })

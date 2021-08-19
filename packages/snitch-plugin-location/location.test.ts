@@ -3,10 +3,10 @@ import locationPlugin from './location'
 
 describe('Location plugin', () => {
   const captureEvent = jest.fn()
-  const trackerMock = { captureEvent }
   window.history.pushState({}, '', '/page1')
-  const plugin = locationPlugin(trackerMock, true)
-  plugin.onInit({ plugins: [] })
+  const plugin = locationPlugin(true)
+  plugin.setEventHandler(captureEvent)
+  plugin.onInit()
 
   it('it sends locationChange events', async () => {
     window.history.pushState({}, '', '/page2')

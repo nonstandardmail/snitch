@@ -1,2 +1,2 @@
-import tracker from './tracker'
-export default tracker
+import snitch from './snitch'
+export default snitch

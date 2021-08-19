@@ -7,13 +7,12 @@ describe('Top Mail.ru Transport plugin', () => {
   it('it posts TMR event when sendEvent is called', () => {
     window._tmr = topmailruCounterMock
     const plugin = topmailruTransportPlugin(TEST_TMR_COUNTER_ID)
-    plugin.sendEvent('test', { hi: 'bye' }, 0)
+    plugin.sendEvent('test', { hi: 'bye' })
     expect(postedTopmailruEventsLog[0]).toMatchObject({
       id: TEST_TMR_COUNTER_ID,
       type: 'reachGoal',
       goal: 'test',
-      params: { hi: 'bye' },
-      value: 0
+      params: { hi: 'bye' }
     })
   })
 })

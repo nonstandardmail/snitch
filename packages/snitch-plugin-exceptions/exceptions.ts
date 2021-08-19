@@ -1,11 +1,11 @@
-import { InitializationHandler } from '../common/plugin-interfaces'
-import { TrackerEventPayload } from '../common/tracker-interfaces'
+import { EventSource, InitializationHandler } from '../common/plugin-interfaces'
+import { EventHandler } from '../common/tracker-interfaces'
 
-export default function exceptionsPlugin(tracker: {
-  captureEvent(eventName: string, eventParams: TrackerEventPayload): void
-}): InitializationHandler {
+export default function exceptionsPlugin(): InitializationHandler & EventSource {
+  let captureEvent: EventHandler
+
   function captureError(errorEvent: ErrorEvent) {
-    tracker.captureEvent('uncaughtError', {
+    captureEvent('uncaughtError', {
       message: errorEvent.message,
       filename: errorEvent.filename,
       lineno: errorEvent.lineno?.toString(),
@@ -15,12 +15,15 @@ export default function exceptionsPlugin(tracker: {
   }
 
   function captureRejection(rejectionEvent: PromiseRejectionEvent) {
-    tracker.captureEvent('unhandledRejection', {
+    captureEvent('unhandledRejection', {
       reason: rejectionEvent.reason
     })
   }
 
   return {
+    setEventHandler(eventHandler: EventHandler) {
+      captureEvent = eventHandler
+    },
     onInit() {
       window.addEventListener('error', captureError)
       window.addEventListener('unhandledrejection', captureRejection)

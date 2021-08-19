@@ -1,13 +1,14 @@
 import '../common/testutil/setup-crypto'
-import openPlugin from './launch'
+import launchPlugin from './launch'
 
-describe('Open plugin', () => {
-  const trackerMock = { captureEvent: jest.fn() }
-  const plugin = openPlugin(trackerMock)
+describe('Launch plugin', () => {
+  const captureEvent = jest.fn()
+  const plugin = launchPlugin()
+  plugin.setEventHandler(captureEvent)
+  plugin.onInit()
 
   it('sends open event on init', () => {
-    plugin.onInit({ plugins: [] })
-    expect(trackerMock.captureEvent).toHaveBeenCalledWith('launch', {
+    expect(captureEvent).toHaveBeenCalledWith('launch', {
       ifr: (window.self !== window.top).toString(),
       ref: window.document.referrer
     })

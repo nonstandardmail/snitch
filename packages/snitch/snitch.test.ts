@@ -1,6 +1,6 @@
 import delay from 'delay'
 import { nth } from 'ramda'
-import Tracker from '.'
+import createSnitch from '.'
 import '../common/testutil/setup-crypto'
 import engagementPlugin from '../snitch-plugin-engagement'
 import launchPlugin from '../snitch-plugin-launch'
@@ -16,22 +16,22 @@ import {
 import topmailruTransportPlugin from '../snitch-plugin-topmailru-transport/topmailru-transport'
 const TEST_COUNTER_ID = '3221421'
 
+window._tmr = topmailruCounterMock
+
+const createPlugins = () => [
+  locationPlugin(true),
+  engagementPlugin(100),
+  sessionPlugin(),
+  screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
+  launchPlugin(),
+  topmailruTransportPlugin(TEST_COUNTER_ID)
+]
+
 describe('Tracker', () => {
-  const plugins = [
-    locationPlugin(Tracker, true),
-    engagementPlugin(Tracker, 100),
-    sessionPlugin(Tracker),
-    screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
-    launchPlugin(Tracker),
-    topmailruTransportPlugin(TEST_COUNTER_ID)
-  ]
-  it('is initializable', () => {
-    expect(Tracker.init).toBeDefined()
-  })
+  let snitch
 
   it('it starts a new session on first init', () => {
-    window._tmr = topmailruCounterMock
-    Tracker.init({ plugins })
+    snitch = createSnitch(...createPlugins())
     // persists session details
     const sessionId = storage.getSessionId()
     const lastInteractiveEventTS = storage.getLastInteractiveEventTS()
@@ -48,7 +48,6 @@ describe('Tracker', () => {
     expect(sessionStartEvent.goal).toEqual('sessionStart')
     expect(sessionStartEvent.value).toEqual(undefined)
     expect(sessionStartEvent.params).toMatchObject({
-      tiid: Tracker.trackerInstanceId,
       href: window.location.href,
       sid: sessionId,
       scnt: sessionCount,
@@ -59,7 +58,7 @@ describe('Tracker', () => {
 
   it('it still sends an "launch" event on init if new session is not created', () => {
     const sessionId = storage.getSessionId()
-    Tracker.init({ plugins })
+    snitch = createSnitch(...createPlugins())
     // does not start a new session
     expect(storage.getSessionId()).toEqual(sessionId)
     expect(storage.getSessionCount()).toEqual(1)
@@ -72,7 +71,7 @@ describe('Tracker', () => {
   it('it starts a new session on init if utm params are set and sends them with TMR events', () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
-    Tracker.init({ plugins })
+    snitch = createSnitch(...createPlugins())
     // persists new session details with utm param values
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
@@ -90,7 +89,7 @@ describe('Tracker', () => {
     const oldSessionId = storage.getSessionId()
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
-    Tracker.init({ plugins })
+    snitch = createSnitch(...createPlugins())
     // persists new session details
     const newSessionId = storage.getSessionId()
     expect(newSessionId !== oldSessionId).toBeTruthy()
@@ -104,26 +103,24 @@ describe('Tracker', () => {
 
   it('it tracks custom events', () => {
     const testEventName = 'testEvent'
-    Tracker.captureEvent(testEventName)
+    snitch(testEventName)
     const testEvent = nth(-1, postedTopmailruEventsLog)
     expect(testEvent.goal).toEqual(testEventName)
   })
 
-  it('it tracks events with payload and value', () => {
+  it('it tracks events with payload', () => {
     const testEventName = 'testEvent'
     const testEventPayload = { param1: '1', param2: 2 }
-    const testEventValue = 40
-    Tracker.captureEvent(testEventName, testEventPayload, testEventValue)
+    snitch(testEventName, testEventPayload)
     const testEvent = nth(-1, postedTopmailruEventsLog)
     expect(testEvent.goal).toEqual(testEventName)
     expect(testEvent.params).toMatchObject(testEventPayload)
-    expect(testEvent.value).toEqual(testEventValue)
   })
 
   it('it updates last interactive event TS after tracking the event', () => {
     const lastInteractiveEventTS = Date.now() - 1
     storage.setLastInterctiveEventTS(lastInteractiveEventTS)
-    Tracker.captureEvent('testEvent')
+    snitch('testEvent')
     expect(lastInteractiveEventTS !== storage.getLastInteractiveEventTS()).toBeTruthy()
   })
 
@@ -131,14 +128,14 @@ describe('Tracker', () => {
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     const oldSessionId = storage.getSessionId()
-    Tracker.captureEvent('testEvent')
+    snitch('testEvent')
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(nth(-2, postedTopmailruEventsLog).goal).toEqual('sessionStart')
     expect(nth(-1, postedTopmailruEventsLog).params.sid !== oldSessionId).toBeTruthy()
   })
 
   it('it tracks screen views', () => {
-    Tracker.init({ plugins })
+    snitch = createSnitch(...createPlugins())
     const sessionStartEvent = nth(-2, postedTopmailruEventsLog)
     expect(sessionStartEvent.goal).toEqual('sessionStart')
     expect(sessionStartEvent.params.sct).toEqual('onboarding')
@@ -147,7 +144,7 @@ describe('Tracker', () => {
     expect(openEvent.goal).toEqual('launch')
     expect(openEvent.params.sct).toEqual('onboarding')
     expect(openEvent.params.scid).toEqual('step1')
-    Tracker.captureEvent('screenChange', { screenType: 'catalogue' })
+    snitch('screenChange', { screenType: 'catalogue' })
     const screenChangeEvent = nth(-1, postedTopmailruEventsLog)
     expect(screenChangeEvent.goal).toEqual('screenChange')
     expect(screenChangeEvent.params.sct).toEqual('catalogue')
@@ -174,9 +171,7 @@ describe('Tracker', () => {
   })
 
   it('it sends engagement events periodically', async () => {
-    Tracker.init({
-      plugins
-    })
+    snitch = createSnitch(...createPlugins())
     await delay(250)
     expect(nth(-1, postedTopmailruEventsLog).goal).toEqual('engage')
     expect(nth(-2, postedTopmailruEventsLog).goal).toEqual('engage')

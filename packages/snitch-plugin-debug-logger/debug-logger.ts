@@ -1,5 +1,5 @@
 import { BeforeCaptureEventHandler, InitializationHandler } from '../common/plugin-interfaces'
-import { TrackerEventPayload, TrackerInitializationOptions } from '../common/tracker-interfaces'
+import { TrackerEventPayload } from '../common/tracker-interfaces'
 export default function engagementPlugin(): InitializationHandler & BeforeCaptureEventHandler {
   let lastLogTS: number | null = null
   function logLine(message: string) {
@@ -15,9 +15,8 @@ export default function engagementPlugin(): InitializationHandler & BeforeCaptur
     lastLogTS = now.getTime()
   }
   return {
-    onInit(options: TrackerInitializationOptions) {
-      logLine('init called with options:')
-      console.table(options)
+    onInit() {
+      logLine('snitch instance created')
     },
 
     beforeCaptureEvent(eventName: string, eventPayload: TrackerEventPayload) {

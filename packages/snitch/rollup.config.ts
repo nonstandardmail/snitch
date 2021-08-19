@@ -8,7 +8,7 @@ export default {
   input: joinPath(__dirname, 'index.ts'),
   output: {
     file: joinPath(__dirname, 'dist/iife.min.js'),
-    name: 'Snitch',
+    name: 'createSnitch',
     format: 'iife',
     sourcemap: false
   },

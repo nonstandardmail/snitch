@@ -13,13 +13,12 @@ export default function tmrTransportPlugin(
       if (!window._tmr) window._tmr = []
     },
 
-    sendEvent(eventName: string, eventParams?: TrackerEventPayload, eventValue?: number) {
+    sendEvent(eventName: string, eventParams?: TrackerEventPayload) {
       window._tmr.push({
         id: topmailruCounterId,
         type: 'reachGoal',
         goal: eventName,
-        params: eventParams,
-        value: eventValue
+        params: eventParams
       })
     }
   }

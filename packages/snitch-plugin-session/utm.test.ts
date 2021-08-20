@@ -6,6 +6,7 @@ describe('#stringifyCompact', () => {
       'vk,,,,mysite'
     )
     expect(utm.stringifyCompact('https://mysite.com/?utm_source=vk')).toEqual('vk')
+    expect(utm.stringifyCompact('https://vk.com/app123#utm_source=vk')).toEqual('vk')
   })
 })
 
@@ -21,6 +22,9 @@ describe('#trimCommas', () => {
 describe('#urlHasParams', () => {
   it('tests if url has utm params in it', () => {
     expect(utm.urlHasParams('https://mysite.com/?utm_source=vk&utm_term=mysite')).toBeTruthy()
+    expect(
+      utm.urlHasParams('https://vk.com/app123#utm_source=vk&utm_campaign=campaign_one')
+    ).toBeTruthy()
     expect(utm.urlHasParams('https://mysite.com/?utm_source=&utm_term=')).toBeFalsy()
   })
 })

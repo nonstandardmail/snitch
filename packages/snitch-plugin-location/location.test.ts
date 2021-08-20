@@ -4,7 +4,7 @@ import locationPlugin from './location'
 describe('Location plugin', () => {
   const captureEvent = jest.fn()
   window.history.pushState({}, '', '/page1')
-  const plugin = locationPlugin(true)
+  const plugin = locationPlugin({ captureLocationChange: true })
   plugin.setEventHandler(captureEvent)
   plugin.onInit()
 

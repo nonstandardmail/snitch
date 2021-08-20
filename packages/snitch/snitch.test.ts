@@ -19,8 +19,8 @@ const TEST_COUNTER_ID = '3221421'
 window._tmr = topmailruCounterMock
 
 const createPlugins = () => [
-  locationPlugin(true),
-  engagementPlugin(100),
+  locationPlugin({ captureLocationChange: true }),
+  engagementPlugin({ engagementTrackingIntervalMsec: 100 }),
   sessionPlugin(),
   screenPlugin({ screenType: 'onboarding', screenId: 'step1' }),
   launchPlugin(),

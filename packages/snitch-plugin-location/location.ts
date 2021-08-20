@@ -6,11 +6,11 @@ import {
 import { EventHandler } from '../common/tracker-interfaces'
 import listenForLocationChange from './listen-for-location-change'
 
-export default function locationPlugin({
-  captureLocationChange = false
-}: {
-  captureLocationChange: boolean
-}): EventPayloadParamsProvider & InitializationHandler & EventSource {
+export default function locationPlugin(
+  options: {
+    captureLocationChange: boolean
+  } = { captureLocationChange: false }
+): EventPayloadParamsProvider & InitializationHandler & EventSource {
   let captureEvent: EventHandler
   return {
     setEventHandler(eventHandler: EventHandler) {
@@ -25,7 +25,7 @@ export default function locationPlugin({
           currentLocation = window.location.href
         }
       }
-      if (captureLocationChange) {
+      if (options.captureLocationChange) {
         listenForLocationChange(locationChangeHandler)
       }
     },

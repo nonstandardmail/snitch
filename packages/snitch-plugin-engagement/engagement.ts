@@ -3,11 +3,11 @@ import { EventHandler } from '../common/tracker-interfaces'
 
 const DEFAULT_ENGAGEMENT_TRACKING_INTERVAL_MSEC = 10 * 1000 // 10 seconds
 
-export default function engagementPlugin({
-  engagementTrackingIntervalMsec = DEFAULT_ENGAGEMENT_TRACKING_INTERVAL_MSEC
-}: {
-  engagementTrackingIntervalMsec: number
-}): InitializationHandler & EventSource {
+export default function engagementPlugin(
+  options: {
+    engagementTrackingIntervalMsec: number
+  } = { engagementTrackingIntervalMsec: DEFAULT_ENGAGEMENT_TRACKING_INTERVAL_MSEC }
+): InitializationHandler & EventSource {
   let captureEvent: EventHandler
 
   return {
@@ -18,7 +18,7 @@ export default function engagementPlugin({
     onInit() {
       setInterval(() => {
         if (document.hidden === false) captureEvent('engage')
-      }, engagementTrackingIntervalMsec)
+      }, options.engagementTrackingIntervalMsec)
     }
   }
 }

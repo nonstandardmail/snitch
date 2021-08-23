@@ -14,8 +14,7 @@
     "url": "git@github.com:nonstandardmail/snitch.git"
   },
   "license": "MIT",
-  "dependencies": {},
-  "peerDependencies": {
+  "dependencies": {
     "web-vitals": "^2.1.0"
   }
 }

@@ -1,7 +1,7 @@
 import { BeforeCaptureEventHandler, EventPayloadParamsProvider } from '../common/plugin-interfaces'
 import { TrackerEventPayload } from '../common/tracker-interfaces'
 
-type Screen = {
+export type Screen = {
   screenType: string
   screenId?: string
 }

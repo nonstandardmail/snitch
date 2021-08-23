@@ -5,7 +5,7 @@
 Добавить в разметку index.html:
 
 1. код библиотеки [**@vkontakte/vk-bridge**](https://unpkg.com/@vkontakte/vk-bridge@latest/dist/browser.min.js);
-2. код библиотеки `@mrgis/snitch-mini-apps`;
+2. код библиотеки [**@mrgis/snitch-mini-apps**](https://unpkg.com/@mrgis/snitch-mini-apps@latest/dist/iife.min.js);
 3. инициализацию счетчика snitch: `window.snitch = createSnitch(...)`.
 
 Например:

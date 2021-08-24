@@ -77,7 +77,7 @@ snitch('characterLevelUp', { characterId: '123', level: 12 }) // пользов�
 - `screenId`: _string_ — позволяет, когда это требуется, уточнить информацию об экране. Например, экран со статьей «Как есть печенье и не толстеть?» `screenType` может иметь значение `'article'`, а `screenId` значение `'how-to-eat-cokies-and-not-get-fat'` — уникальный slug статьи.
 
 <p align="center">
-  <img width="800" src="https://staticmail.hb.bizmrg.com/screens-example.jpg" />
+  <img width="880" src="https://staticmail.hb.bizmrg.com/screens-example.jpg" />
 </p>
 
 <p align="center">

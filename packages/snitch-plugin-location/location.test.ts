@@ -20,4 +20,13 @@ describe('Location plugin', () => {
   it('it provides href event param', async () => {
     expect(plugin.getEventPayloadParams()).toEqual({ href: window.location.href })
   })
+
+  it('it allows to provide a location getter', async () => {
+    const providedLocation = 'http://localhost/hello'
+    const plugin = locationPlugin({
+      captureLocationChange: false,
+      getLocation: () => providedLocation
+    })
+    expect(plugin.getEventPayloadParams()).toEqual({ href: providedLocation })
+  })
 })

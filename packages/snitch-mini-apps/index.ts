@@ -16,7 +16,7 @@ export default (options: { vkBridge: VKBridge; initialScreen: Screen }) =>
     snitchPluginEngagement(),
     snitchPluginLocation({
       captureLocationChange: false,
-      getLocation: () => window.location.href.replace(/sign=[A-z0-9]+(&|$)/, '')
+      getLocation: () => window.location.href.replace(/sign=[A-z0-9_-]+(&|$)/, '')
     }),
     snitchPluginScreens(options.initialScreen),
     snitchPluginExceptions(),

@@ -11,7 +11,7 @@ import snitchPluginWebVitals from '../snitch-plugin-web-vitals/web-vitals'
 
 export default (options: { vkBridge: VKBridge; initialScreen: Screen }) =>
   createSnitch(
-    snitchPluginLaunch(),
+    snitchPluginLaunch({ trackMiniAppParams: true }),
     snitchPluginSession(),
     snitchPluginEngagement(),
     snitchPluginLocation({

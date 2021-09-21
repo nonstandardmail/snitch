@@ -1,0 +1,15 @@
+{
+  "name": "@mrgis/snitch-web",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "main": "dist/lib/snitch-web/index.js",
+  "typings": "dist/types/snitch-web/index.d.ts",
+  "files": [ "dist" ],
+  "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nonstandardmail/snitch.git"
+  },
+  "license": "MIT"
+}

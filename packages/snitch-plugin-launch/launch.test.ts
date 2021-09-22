@@ -9,13 +9,13 @@ describe('Launch plugin', () => {
 
   it('sends open event on init', () => {
     expect(captureEvent).toHaveBeenCalledWith('launch', {
-      ifr: (window.self !== window.top).toString(),
-      ref: window.document.referrer
+      ifr: (window.self !== window.top).toString()
     })
   })
 
   it('it provides lid event param', async () => {
     expect(plugin.getEventPayloadParams().lid).toBeDefined()
+    expect(plugin.getEventPayloadParams().ref).toEqual(window.document.referrer)
   })
 })
 
@@ -34,7 +34,6 @@ describe('Launch plugin for mini-apps', () => {
   it('sends open event on init', () => {
     expect(captureEvent).toHaveBeenCalledWith('launch', {
       ifr: (window.self !== window.top).toString(),
-      ref: window.document.referrer,
       maane: '0',
       maiau: '0',
       maif: '0',
@@ -46,6 +45,7 @@ describe('Launch plugin for mini-apps', () => {
   it('it provides lid event param', async () => {
     expect(plugin.getEventPayloadParams().lid).toBeDefined()
     expect(plugin.getEventPayloadParams()).toMatchObject({
+      ref: window.document.referrer,
       mauid: '1094041',
       maaid: '7926703',
       malang: 'ru',

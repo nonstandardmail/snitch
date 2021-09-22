@@ -13,6 +13,7 @@ export default function launchPlugin(options?: {
   const shouldTrackMiniAppParams = !!options && options.trackMiniAppParams
   let captureEvent: EventHandler
   const launchId = createUniqueId()
+  const referrer = window.document.referrer
   const miniAppEventProviderParams = shouldTrackMiniAppParams
     ? miniAppsLaunchParams.eventProviderParams(location.href)
     : {}
@@ -23,6 +24,7 @@ export default function launchPlugin(options?: {
     getEventPayloadParams() {
       return {
         lid: launchId,
+        ref: referrer,
         ...miniAppEventProviderParams
       }
     },
@@ -31,7 +33,6 @@ export default function launchPlugin(options?: {
         ? miniAppsLaunchParams.launchEventParams(location.href)
         : {}
       captureEvent('launch', {
-        ref: document.referrer,
         ifr: (window.self !== window.top).toString(),
         ...miniAppLaunchEventParams
       })

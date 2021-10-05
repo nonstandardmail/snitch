@@ -11,6 +11,7 @@ const eventProviderParamsMap = {
   vk_app_id: 'maaid',
   vk_language: 'malang',
   vk_client: 'mac',
+  vk_platform: 'map',
   vk_ref: 'maref'
 }
 
@@ -18,7 +19,6 @@ const launchEventParamsMap = {
   vk_are_notifications_enabled: 'maane',
   vk_is_app_user: 'maiau',
   vk_is_favorite: 'maif',
-  vk_platform: 'map',
   vk_ts: 'mats'
 }
 

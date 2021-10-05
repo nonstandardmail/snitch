@@ -10,7 +10,8 @@ describe('mini apps launch params readers', () => {
       maaid: '7926703',
       malang: 'ru',
       mac: '',
-      maref: 'other'
+      maref: 'other',
+      map: 'mobile_web'
     })
   })
 
@@ -20,7 +21,6 @@ describe('mini apps launch params readers', () => {
       maane: '0',
       maiau: '0',
       maif: '0',
-      map: 'mobile_web',
       mats: '1632238478'
     })
   })

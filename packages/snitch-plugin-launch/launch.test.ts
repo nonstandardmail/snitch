@@ -37,12 +37,11 @@ describe('Launch plugin for mini-apps', () => {
       maane: '0',
       maiau: '0',
       maif: '0',
-      map: 'mobile_web',
       mats: '1632238478'
     })
   })
 
-  it('it provides lid event param', async () => {
+  it('it provides event params', async () => {
     expect(plugin.getEventPayloadParams().lid).toBeDefined()
     expect(plugin.getEventPayloadParams()).toMatchObject({
       ref: window.document.referrer,
@@ -50,6 +49,7 @@ describe('Launch plugin for mini-apps', () => {
       maaid: '7926703',
       malang: 'ru',
       mac: '',
+      map: 'mobile_web',
       maref: 'other'
     })
   })

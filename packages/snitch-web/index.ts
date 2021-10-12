@@ -6,6 +6,7 @@ import snitchPluginLocation from '../snitch-plugin-location/location'
 import snitchPluginScreens, { Screen } from '../snitch-plugin-screens/screens'
 import snitchPluginSession from '../snitch-plugin-session/session'
 import snitchPluginTOPMailruTransport from '../snitch-plugin-topmailru-transport/topmailru-transport'
+import snitchPluginUseragent from '../snitch-plugin-useragent/useragent'
 import snitchPluginWebVitals from '../snitch-plugin-web-vitals/web-vitals'
 
 export default (options: { topmailruCounterId: string; initialScreen?: Screen }) =>
@@ -13,6 +14,7 @@ export default (options: { topmailruCounterId: string; initialScreen?: Screen })
     snitchPluginLaunch(),
     snitchPluginSession(),
     snitchPluginEngagement(),
+    snitchPluginUseragent(),
     snitchPluginLocation({ captureLocationChange: true }),
     snitchPluginScreens(options.initialScreen || { screenType: 'undefined' }),
     snitchPluginExceptions(),

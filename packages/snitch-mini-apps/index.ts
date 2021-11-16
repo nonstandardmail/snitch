@@ -4,11 +4,10 @@ import snitchPluginExceptions from '../snitch-plugin-exceptions/exceptions'
 import snitchPluginLaunch from '../snitch-plugin-launch/launch'
 import snitchPluginScreens, { Screen } from '../snitch-plugin-screens/screens'
 import snitchPluginSession from '../snitch-plugin-session/session'
-import { VKBridge } from '../snitch-plugin-vkbridge-transport/vkbridge'
 import snitchPluginVKBridgeTransport from '../snitch-plugin-vkbridge-transport/vkbridge-transport'
 import snitchPluginWebVitals from '../snitch-plugin-web-vitals/web-vitals'
 
-export default (options: { vkBridge: VKBridge; initialScreen: Screen }) =>
+export default (options: { initialScreen: Screen }) =>
   createSnitch(
     snitchPluginLaunch({ trackMiniAppParams: true }),
     snitchPluginSession(),
@@ -16,5 +15,5 @@ export default (options: { vkBridge: VKBridge; initialScreen: Screen }) =>
     snitchPluginScreens(options.initialScreen),
     snitchPluginExceptions(),
     snitchPluginWebVitals(),
-    snitchPluginVKBridgeTransport(options.vkBridge)
+    snitchPluginVKBridgeTransport()
   )

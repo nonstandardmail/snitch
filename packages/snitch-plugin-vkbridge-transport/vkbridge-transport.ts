@@ -1,14 +1,13 @@
 import { EventTransport } from '../common/plugin-interfaces'
 import { TrackerEventPayload } from '../common/tracker-interfaces'
-import { VKBridge } from './vkbridge'
+import vkBridgeSend from './vkbridge-send'
 
 export const ERROR_NO_VK_BRIDGE = 'initErrorNoVKBridge'
 
-export default function vkbridgeTransportPlugin(bridge: VKBridge): EventTransport {
-  if (!bridge) throw TypeError(ERROR_NO_VK_BRIDGE)
+export default function vkbridgeTransportPlugin(): EventTransport {
   return {
     sendEvent(eventName: string, eventParams?: TrackerEventPayload) {
-      bridge.send('VKWebAppTrackEvent', {
+      vkBridgeSend({
         event_name: eventName,
         event_params: eventParams
       })

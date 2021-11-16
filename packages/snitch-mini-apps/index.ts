@@ -5,7 +5,6 @@ import snitchPluginLaunch from '../snitch-plugin-launch/launch'
 import snitchPluginScreens, { Screen } from '../snitch-plugin-screens/screens'
 import snitchPluginSession from '../snitch-plugin-session/session'
 import snitchPluginVKBridgeTransport from '../snitch-plugin-vkbridge-transport/vkbridge-transport'
-import snitchPluginWebVitals from '../snitch-plugin-web-vitals/web-vitals'
 
 export default (options: { initialScreen: Screen }) =>
   createSnitch(
@@ -14,6 +13,5 @@ export default (options: { initialScreen: Screen }) =>
     snitchPluginEngagement(),
     snitchPluginScreens(options.initialScreen),
     snitchPluginExceptions(),
-    snitchPluginWebVitals(),
     snitchPluginVKBridgeTransport()
   )

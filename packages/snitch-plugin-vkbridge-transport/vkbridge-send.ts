@@ -36,7 +36,7 @@ export default function send(props: VKWebAppTrackEventPayload) {
 
   // Sending data through iOS bridge
   else if (iosBridge && iosBridge[method] && typeof iosBridge[method].postMessage === 'function') {
-    iosBridge[method].postMessage!(props)
+    ;(window as any).webkit.messageHandlers[method].postMessage!(props)
   }
 
   // Sending data through web bridge

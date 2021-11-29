@@ -32,10 +32,14 @@ export default function launchPlugin(options?: {
       const miniAppLaunchEventParams = shouldTrackMiniAppParams
         ? miniAppsLaunchParams.launchEventParams(location.href)
         : {}
-      captureEvent('launch', {
-        ifr: (window.self !== window.top).toString(),
-        ...miniAppLaunchEventParams
-      })
+      setTimeout(
+        () =>
+          captureEvent('launch', {
+            ifr: (window.self !== window.top).toString(),
+            ...miniAppLaunchEventParams
+          }),
+        0
+      )
     }
   }
 }

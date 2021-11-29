@@ -1,3 +1,4 @@
+import delay from 'delay'
 import '../common/testutil/setup-crypto'
 import launchPlugin from './launch'
 
@@ -7,7 +8,8 @@ describe('Launch plugin', () => {
   plugin.setEventHandler(captureEvent)
   plugin.onInit()
 
-  it('sends open event on init', () => {
+  it('sends open event on init', async () => {
+    await delay(0)
     expect(captureEvent).toHaveBeenCalledWith('launch', {
       ifr: (window.self !== window.top).toString()
     })
@@ -31,7 +33,8 @@ describe('Launch plugin for mini-apps', () => {
   plugin.setEventHandler(captureEvent)
   plugin.onInit()
 
-  it('sends open event on init', () => {
+  it('sends open event on init', async () => {
+    await delay(0)
     expect(captureEvent).toHaveBeenCalledWith('launch', {
       ifr: (window.self !== window.top).toString(),
       maane: '0',

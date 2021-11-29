@@ -14,6 +14,8 @@ export default function vkbridgeTransportPlugin(): EventTransport {
       */
       if (eventParams) {
         for (const paramKey of Object.keys(eventParams)) {
+          if (eventParams[paramKey] === null) eventParams[paramKey] = 'null'
+          if (eventParams[paramKey] === undefined) eventParams[paramKey] = 'undefined'
           if (typeof eventParams[paramKey] !== 'string')
             eventParams[paramKey] = eventParams[paramKey].toString()
         }

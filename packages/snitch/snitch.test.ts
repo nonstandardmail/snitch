@@ -30,8 +30,9 @@ const createPlugins = () => [
 describe('Tracker', () => {
   let snitch
 
-  it('it starts a new session on first init', () => {
+  it('it starts a new session on first init', async () => {
     snitch = createSnitch(...createPlugins())
+    await delay(0)
     // persists session details
     const sessionId = storage.getSessionId()
     const lastInteractiveEventTS = storage.getLastInteractiveEventTS()
@@ -56,9 +57,10 @@ describe('Tracker', () => {
     expect(sessionStartEvent.params.set >= 0).toBeTruthy()
   })
 
-  it('it still sends an "launch" event on init if new session is not created', () => {
+  it('it still sends an "launch" event on init if new session is not created', async () => {
     const sessionId = storage.getSessionId()
     snitch = createSnitch(...createPlugins())
+    await delay(0)
     // does not start a new session
     expect(storage.getSessionId()).toEqual(sessionId)
     expect(storage.getSessionCount()).toEqual(1)
@@ -68,10 +70,11 @@ describe('Tracker', () => {
     expect(openEvent.params.sid).toEqual(sessionId)
   })
 
-  it('it starts a new session on init if utm params are set and sends them with TMR events', () => {
+  it('it starts a new session on init if utm params are set and sends them with TMR events', async () => {
     const oldSessionId = storage.getSessionId()
     window.history.replaceState({}, '', '/?utm_source=vk&utm_medium=promopost')
     snitch = createSnitch(...createPlugins())
+    await delay(0)
     // persists new session details with utm param values
     expect(storage.getSessionId() !== oldSessionId).toBeTruthy()
     expect(storage.getSessionCount()).toEqual(2)
@@ -85,11 +88,12 @@ describe('Tracker', () => {
     expect(openEvent.params.sutm).toEqual('vk,promopost')
   })
 
-  it('it starts a new session on init if existing session is stale', () => {
+  it('it starts a new session on init if existing session is stale', async () => {
     const oldSessionId = storage.getSessionId()
     // make current session stale
     storage.setLastInterctiveEventTS(Date.now() - SESSION_EXPIRING_INACTIVITY_TIME_MSEC * 2)
     snitch = createSnitch(...createPlugins())
+    await delay(0)
     // persists new session details
     const newSessionId = storage.getSessionId()
     expect(newSessionId !== oldSessionId).toBeTruthy()
@@ -134,8 +138,9 @@ describe('Tracker', () => {
     expect(nth(-1, postedTopmailruEventsLog).params.sid !== oldSessionId).toBeTruthy()
   })
 
-  it('it tracks screen views', () => {
+  it('it tracks screen views', async () => {
     snitch = createSnitch(...createPlugins())
+    await delay(0)
     const sessionStartEvent = nth(-2, postedTopmailruEventsLog)
     expect(sessionStartEvent.goal).toEqual('sessionStart')
     expect(sessionStartEvent.params.sct).toEqual('onboarding')

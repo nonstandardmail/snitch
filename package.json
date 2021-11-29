@@ -22,7 +22,7 @@
     "prebuild": "rimraf packages/*/dist",
     "build": "find ./packages -type f -name \"tsconfig.json\" -exec npx tsc --module commonjs -p {} \\; && find ./packages -type f -name \"rollup.config.ts\" -exec rollup -c {} \\;",
     "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
+    "test": "jest",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache"
   },

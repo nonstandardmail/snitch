@@ -1,10 +1,10 @@
 {
-  "name": "@mrgis/snitch-web",
-  "version": "0.0.7",
+  "name": "@mrgis/snitch-plugin-scroll",
+  "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/lib/snitch-web/index.js",
-  "typings": "dist/types/snitch-web/index.d.ts",
+  "main": "dist/lib/snitch-plugin-scroll/index.js",
+  "typings": "dist/types/snitch-plugin-scroll/index.d.ts",
   "files": [
     "dist"
   ],

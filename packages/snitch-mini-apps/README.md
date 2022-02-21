@@ -80,7 +80,6 @@ snitch('characterLevelUp', { characterId: '123', level: 12 }) // пользов�
 
 ```js
 window.snitch = createSnitch({
-  vkBridge: window.vkBridge,
   initialScreen: { screenType: 'loading' } // <- экран загрузки
 })
 ```

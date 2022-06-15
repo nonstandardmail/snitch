@@ -5,18 +5,13 @@ import {
   InitializationHandler
 } from '../common/plugin-interfaces'
 import { EventHandler } from '../common/tracker-interfaces'
-import miniAppsLaunchParams from './mini-apps-launch-params'
 
-export default function launchPlugin(options?: {
-  trackMiniAppParams?: boolean
-}): InitializationHandler & EventPayloadParamsProvider & EventSource {
-  const shouldTrackMiniAppParams = !!options && options.trackMiniAppParams
+export default function launchPlugin(): InitializationHandler &
+  EventPayloadParamsProvider &
+  EventSource {
   let captureEvent: EventHandler
   const launchId = createUniqueId()
   const referrer = window.document.referrer
-  const miniAppEventProviderParams = shouldTrackMiniAppParams
-    ? miniAppsLaunchParams.eventProviderParams(location.href)
-    : {}
   return {
     setEventHandler(eventHandler: EventHandler) {
       captureEvent = eventHandler
@@ -24,19 +19,14 @@ export default function launchPlugin(options?: {
     getEventPayloadParams() {
       return {
         lid: launchId,
-        ref: referrer,
-        ...miniAppEventProviderParams
+        ref: referrer
       }
     },
     onInit() {
-      const miniAppLaunchEventParams = shouldTrackMiniAppParams
-        ? miniAppsLaunchParams.launchEventParams(location.href)
-        : {}
       setTimeout(
         () =>
           captureEvent('launch', {
-            ifr: (window.self !== window.top).toString(),
-            ...miniAppLaunchEventParams
+            ifr: (window.self !== window.top).toString()
           }),
         0
       )

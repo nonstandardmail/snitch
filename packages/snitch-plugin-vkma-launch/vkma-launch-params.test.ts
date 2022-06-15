@@ -1,4 +1,4 @@
-import miniAppsLaunchParams from './mini-apps-launch-params'
+import miniAppsLaunchParams from './vkma-launch-params'
 const vkMiniAppTestURL =
   'https://vk-prod.app1.com/index.html?vk_access_token_settings=&vk_app_id=7926703&vk_are_notifications_enabled=0&vk_is_app_user=0&vk_is_favorite=0&vk_language=ru&vk_platform=mobile_web&vk_ref=other&vk_ts=1632238478&vk_user_id=1094041&sign=123'
 

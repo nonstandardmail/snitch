@@ -34,9 +34,7 @@ export default function VKMALaunchPlugin(): InitializationHandler &
           ifr: (window.self !== window.top).toString(),
           ...miniAppLaunchEventParams
         })
-        captureEvent('mt_internal_launch', {
-          customUserId: miniAppEventProviderParams['mauid']
-        })
+        captureEvent('mt_internal_launch')
       }, 0)
     }
   }

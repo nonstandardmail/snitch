@@ -23,9 +23,7 @@ describe('Launch plugin for VKMA platform', () => {
       maif: '0',
       mats: '1632238478'
     })
-    expect(captureEvent).toHaveBeenCalledWith('mt_internal_launch', {
-      customUserId: '1094041'
-    })
+    expect(captureEvent).toHaveBeenCalledWith('mt_internal_launch')
   })
 
   it('it provides event params', async () => {

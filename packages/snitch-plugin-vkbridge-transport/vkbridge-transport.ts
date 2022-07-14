@@ -5,6 +5,8 @@ import vkBridgeSend from './vkbridge-send'
 export const ERROR_NO_VK_BRIDGE = 'initErrorNoVKBridge'
 
 export default function vkbridgeTransportPlugin(): EventTransport {
+  const url = new URL(location.href)
+  const vkUserId = url.searchParams.get('vk_user_id') || 'anonymous'
   return {
     sendEvent(eventName: string, eventParams?: TrackerEventPayload) {
       /*
@@ -21,6 +23,7 @@ export default function vkbridgeTransportPlugin(): EventTransport {
         }
       }
       vkBridgeSend({
+        custom_user_id: vkUserId,
         event_name: eventName,
         event_params: eventParams
       })

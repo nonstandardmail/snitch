@@ -1,11 +1,13 @@
 {
   "name": "@mrgis/snitch-plugin-vkbridge-transport",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-vkbridge-transport/index.js",
   "typings": "dist/types/snitch-plugin-vkbridge-transport/index.d.ts",
-  "files": [ "dist" ],
+  "files": [
+    "dist"
+  ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {
     "type": "git",

@@ -8,7 +8,7 @@ export const topmailruCounterMock: TMRCounter = {
   push(event) {
     postedTopmailruEventsLog.push(event)
   },
-  getClientID() {
-    return 'MOCK_CLIENT_ID'
+  getUserID() {
+    return undefined
   }
 }

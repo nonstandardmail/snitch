@@ -10,7 +10,11 @@ import snitchPluginUseragent from '../snitch-plugin-useragent/useragent'
 import snitchPluginWebVitals from '../snitch-plugin-web-vitals/web-vitals'
 import createSnitch from '../snitch/index'
 
-export default (options: { topmailruCounterId: string; initialScreen?: Screen }) =>
+export default (options: {
+  topmailruCounterId: string
+  initialScreen?: Screen
+  userIdResolver?: () => string | null | undefined
+}) =>
   createSnitch(
     snitchPluginLaunch(),
     snitchPluginSession(),
@@ -21,5 +25,5 @@ export default (options: { topmailruCounterId: string; initialScreen?: Screen })
     snitchPluginScreens(options.initialScreen || { screenType: 'undefined' }),
     snitchPluginExceptions(),
     snitchPluginWebVitals(),
-    snitchPluginTOPMailruTransport(options.topmailruCounterId)
+    snitchPluginTOPMailruTransport(options.topmailruCounterId, options.userIdResolver)
   )

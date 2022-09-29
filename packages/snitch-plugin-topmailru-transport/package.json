@@ -1,11 +1,13 @@
 {
   "name": "@mrgis/snitch-plugin-topmailru-transport",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-topmailru-transport/index.js",
   "typings": "dist/types/snitch-plugin-topmailru-transport/index.d.ts",
-  "files": [ "dist" ],
+  "files": [
+    "dist"
+  ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {
     "type": "git",

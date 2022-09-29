@@ -22,6 +22,7 @@ export interface TMRInstructionSendCustomEvent extends TMRInstruction {
   params?: IMRCustomEventParams
   value?: number
   version?: string
+  userid?: string
 }
 
 export interface IMRCustomEventParams {
@@ -50,5 +51,5 @@ export interface TMRCounter {
       | TMRInstructionUnsetUserId
       | TMRInstructionSetOnReadyCallback
   ): void
-  getClientID(): string
+  getUserID(): string | undefined
 }

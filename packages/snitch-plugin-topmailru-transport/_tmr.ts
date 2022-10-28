@@ -1,15 +1,15 @@
 declare global {
   interface Window {
-    _tmr:
-      | TMRCounter
-      | Array<
-          | TMRInstructionSendCustomEvent
-          | TMRInstructionSetUserId
-          | TMRInstructionUnsetUserId
-          | TMRInstructionSetOnReadyCallback
-        >
+    _tmr: TMRCounter | UninitializedTMRCounter
   }
 }
+
+export type UninitializedTMRCounter = Array<
+  | TMRInstructionSendCustomEvent
+  | TMRInstructionSetUserId
+  | TMRInstructionUnsetUserId
+  | TMRInstructionSetOnReadyCallback
+>
 
 interface TMRInstruction {
   id: string

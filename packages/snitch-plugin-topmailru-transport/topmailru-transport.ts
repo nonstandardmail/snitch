@@ -3,7 +3,7 @@ import { EventTransport, InitializationHandler } from '../common/plugin-interfac
 import { TrackerEventPayload } from '../common/tracker-interfaces'
 import * as storage from './storage'
 import './_tmr'
-import { TMRCounter } from './_tmr'
+import { TMRCounter, UninitializedTMRCounter } from './_tmr'
 
 export const ERROR_NO_TMR_COUNTER_ID = 'initErrorNoTMRCounterId'
 
@@ -22,6 +22,16 @@ export default function tmrTransportPlugin(
     return anonymousUserId
   }
 
+  const getTMRCounterUserId = () => {
+    const _tmr = window._tmr as TMRCounter
+    if (_tmr.getUserID) return _tmr.getUserID()
+    const userId = (window._tmr as UninitializedTMRCounter).reduce((userId, eventCandidate) => {
+      if (eventCandidate.type === 'setUserID') return eventCandidate.userid
+      return userId
+    }, '')
+    return userId || null
+  }
+
   return {
     onInit() {
       if (!window._tmr) window._tmr = []
@@ -34,9 +44,7 @@ export default function tmrTransportPlugin(
         goal: eventName,
         params: eventParams,
         userid:
-          (userIdResolver && userIdResolver()) ||
-          (window._tmr as TMRCounter)?.getUserID() ||
-          getAnonymousUserId()
+          (userIdResolver && userIdResolver()) || getTMRCounterUserId() || getAnonymousUserId()
       })
     }
   }

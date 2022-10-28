@@ -1,6 +1,6 @@
 {
   "name": "@mrgis/snitch-web",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-web/index.js",

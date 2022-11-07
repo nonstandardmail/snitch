@@ -8,6 +8,8 @@ import listenForLocationChange from './listen-for-location-change'
 
 type LocationGetter = () => string
 
+const HREF_MAX_LENGTH = 500
+
 export default function locationPlugin(options: {
   captureLocationChange: boolean
   getLocation?: LocationGetter
@@ -23,7 +25,7 @@ export default function locationPlugin(options: {
       const locationDidChange = () => currentLocation !== getCurrentLocation()
       function locationChangeHandler() {
         if (locationDidChange()) {
-          captureEvent('locationChange', { phref: currentLocation })
+          captureEvent('locationChange', { phref: currentLocation.slice(0, HREF_MAX_LENGTH) })
           currentLocation = getCurrentLocation()
         }
       }
@@ -33,7 +35,7 @@ export default function locationPlugin(options: {
     },
     getEventPayloadParams() {
       return {
-        href: getCurrentLocation()
+        href: getCurrentLocation().slice(0, HREF_MAX_LENGTH)
       }
     }
   }

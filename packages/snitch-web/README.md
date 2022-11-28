@@ -24,8 +24,8 @@
       // инициализация счетчика snitch:
       window.snitch = createSnitch({
         topmailruCounterId: 'TOP_COUNTER_ID', // обязательный параметр
-        initialScreen: { screenType: 'loading' },
-        userIdResolver: () => authService.getCurrentUserId()
+        initialScreen: { screenType: 'loading' }, // опциональный параметр
+        userIdResolver: () => authService.getCurrentUserId() // опциональный параметр
       })
     </script>
     <!-- ... -->

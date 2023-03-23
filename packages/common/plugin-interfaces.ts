@@ -20,10 +20,15 @@ export interface EventTransport {
   sendEvent(eventName: string, eventParams?: TrackerEventPayload): void
 }
 
+export interface MixinProvider {
+  getMixins(): Record<string, Function>
+}
+
 export type Plugin = Partial<
   EventPayloadParamsProvider &
     InitializationHandler &
     BeforeCaptureEventHandler &
     EventTransport &
-    EventSource
+    EventSource &
+    MixinProvider
 >

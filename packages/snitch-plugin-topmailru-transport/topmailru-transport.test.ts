@@ -1,4 +1,4 @@
-import * as storage from './storage'
+import { getAnonymousUserId } from '../common/anonymous-id-store'
 import { postedTopmailruEventsLog, topmailruCounterMock } from './topmailru-counter-mock'
 import topmailruTransportPlugin from './topmailru-transport'
 
@@ -14,9 +14,9 @@ describe('Top Mail.ru Transport plugin', () => {
       type: 'reachGoal',
       goal: 'test',
       params: { hi: 'bye' },
-      userid: storage.getAnonymousUserId()
+      userid: getAnonymousUserId()
     })
-    expect(storage.getAnonymousUserId()).toMatch(/@anonymous/)
+    expect(getAnonymousUserId()).toMatch(/@anonymous/)
   })
 
   it('it sends user id with event if userIdResolver provided', () => {

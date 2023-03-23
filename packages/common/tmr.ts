@@ -53,3 +53,13 @@ export interface TMRCounter {
   ): void
   getUserID(): string | undefined
 }
+
+export const getTMRCounterUserId = () => {
+  const _tmr = window._tmr as TMRCounter
+  if (_tmr.getUserID) return _tmr.getUserID()
+  const userId = (window._tmr as UninitializedTMRCounter).reduce((userId, eventCandidate) => {
+    if (eventCandidate.type === 'setUserID') return eventCandidate.userid
+    return userId
+  }, '')
+  return userId || null
+}

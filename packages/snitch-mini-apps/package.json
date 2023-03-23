@@ -1,6 +1,6 @@
 {
   "name": "@mrgis/snitch-mini-apps",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-mini-apps/index.js",

@@ -1,4 +1,4 @@
-import { TMRCounter } from './_tmr'
+import { TMRCounter } from '../common/tmr'
 
 type PostedEventsLog = any[]
 

@@ -1,10 +1,10 @@
 {
-  "name": "@mrgis/snitch",
-  "version": "0.2.0",
+  "name": "@mrgis/snitch-plugin-flag",
+  "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/lib/snitch/index.js",
-  "typings": "dist/types/snitch/index.d.ts",
+  "main": "dist/lib/snitch-plugin-flag/index.js",
+  "typings": "dist/types/snitch-plugin-flag/index.d.ts",
   "files": [
     "dist"
   ],

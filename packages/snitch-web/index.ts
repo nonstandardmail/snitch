@@ -1,5 +1,6 @@
 import snitchPluginEngagement from '../snitch-plugin-engagement/engagement'
 import snitchPluginExceptions from '../snitch-plugin-exceptions/exceptions'
+import snitchPluginFlag from '../snitch-plugin-flag/flag'
 import snitchPluginLaunch from '../snitch-plugin-launch/launch'
 import snitchPluginLocation from '../snitch-plugin-location/location'
 import snitchPluginScreens, { Screen } from '../snitch-plugin-screens/screens'
@@ -13,6 +14,7 @@ export default (options: {
   topmailruCounterId: string
   initialScreen?: Screen
   userIdResolver?: () => string | null | undefined
+  flagApiEndpoint?: string
 }) =>
   createSnitch(
     snitchPluginLaunch(),
@@ -23,5 +25,9 @@ export default (options: {
     snitchPluginScreens(options.initialScreen || { screenType: 'undefined' }),
     snitchPluginExceptions(),
     snitchPluginWebVitals(),
+    snitchPluginFlag({
+      userIdResolver: options.userIdResolver,
+      flagApiEndpoint: options.flagApiEndpoint || '/'
+    }),
     snitchPluginTOPMailruTransport(options.topmailruCounterId, options.userIdResolver)
   )

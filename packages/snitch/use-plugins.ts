@@ -30,5 +30,17 @@ export default (plugins: Array<Plugin>) => ({
 
   setEventHandler(eventHandler: EventHandler) {
     plugins.forEach(plugin => plugin.setEventHandler?.(eventHandler))
+  },
+
+  applyMixins(eventHandler: EventHandler) {
+    Object.setPrototypeOf(
+      eventHandler,
+      plugins.reduce((mixins: Record<string, Function>, plugin) => {
+        if (plugin.getMixins) {
+          return { ...mixins, ...plugin.getMixins() }
+        }
+        return mixins
+      }, {})
+    )
   }
 })

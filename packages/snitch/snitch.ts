@@ -17,5 +17,6 @@ export default (...args: Array<Plugin>) => {
 
   plugins.setEventHandler(captureEvent)
   plugins.callInitializationHandlers()
+  plugins.applyMixins(captureEvent)
   return captureEvent
 }

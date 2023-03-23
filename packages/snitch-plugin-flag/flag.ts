@@ -17,7 +17,7 @@ export default function flagPlugin(options: {
 }): MixinProvider & EventSource {
   const flagService = flagServiceFactory(options.flagApiEndpoint)
   const url = new URL(location.href)
-  const vkUserId = url.searchParams.get('vk_user_id') || 'anonymous'
+  const vkUserId = url.searchParams.get('vk_user_id')
   const getEntityId = (): string => {
     const entityId =
       (options.userIdResolver && options.userIdResolver()) ||

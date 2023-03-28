@@ -56,7 +56,7 @@ export default (flagApiEndpoint: string) => {
     evaluateFlagBatch: async (
       evaluationRequests: EvaluationRequest[]
     ): Promise<BatchEvaluationResponse> => {
-      const methodName = 'batchEvaluate'
+      const methodName = 'batch-evaluate'
       const evaluationResult = await window.fetch(`${flagApiEndpoint}${methodName}`, {
         method: 'POST',
         body: JSON.stringify({ requests: evaluationRequests })

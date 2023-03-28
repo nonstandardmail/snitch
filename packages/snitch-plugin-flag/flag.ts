@@ -7,8 +7,8 @@ import flagServiceFactory, { EvaluationResponse } from './flag-service'
 interface Flag {
   flagKey: string
   match: boolean
-  variant: string
-  attachment: string
+  variant?: string
+  attachment?: string
 }
 
 export default function flagPlugin(options: {

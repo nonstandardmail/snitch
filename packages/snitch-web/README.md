@@ -55,10 +55,12 @@ type Flag = {
   attachment?: string
 }
 
+type FlagEvaluationContext = Record<string, string | number | boolean>
+
 interface Snitch {
   (eventName: string, eventPayload?: SnitchEventPayload): void
-  getFlag(flagKey: string): Promise<Flag>
-  getFlags(flagKeys: string[]): Promise<Flag[]>
+  getFlag(flagKey: string, context?: FlagEvaluationContext): Promise<Flag>
+  getFlags(flagKeys: string[], context?: FlagEvaluationContext): Promise<Flag[]>
 }
 
 declare global {
@@ -126,13 +128,47 @@ snitch('screenChange', { screenType: 'cart' }) // пользователь пе�
 
 ## Флаги
 
-Snitch позволяет работать с feature flags. Для этого при инициализации счетчика в параметре `flagApiEndpoint` нужно указать URL эндпоинта сервиса флагов. Значение флагов можно получать методом `snitch.getFlag` с сигнатурой `(flagKey: string) => Promise<Flag>` или батч методом `snitch.getFlags` с сигнатурой `(flagsKey: string[]) => Promise<Flag[]>`, где возвращаемый объект `Flag` имеет структуру:
+Snitch позволяет работать с feature flags. Для этого при инициализации счетчика в параметре `flagApiEndpoint` нужно указать URL эндпоинта сервиса флагов. Значения флагов можно получать методом `snitch.getFlag` или батч методом `snitch.getFlags`. Ответ будет содержать флаг или массив флагов в виде объекта с полями:
 
-```TypeScript
-type Flag = {
-  flagKey: string // уникальное имя флага
-  match: boolean // метка включен или отключен флаг
-  variant?: string  // вариант, если флаг имеет варианты
-  attachment?: string // строка с данными для работы флага, может быть как plain text так и JSON
+- `flagKey: string` — уникальное имя флага
+- `match: boolean` — включен или отключен флаг
+- `variant: string` — вариант, если флаг имеет варианты
+- `attachment: string` — дополнительные данные в формате JSON-строки
+
+#### Пример использования getFlag:
+
+```js
+snitch.getFlag('test-app-button-color').then(console.log)
+```
+
+```JSON
+{
+    "flagKey": "test-app-button-color",
+    "match": true,
+    "variant": "red",
+    "attachment": ""
 }
+```
+
+#### Пример использования getFlags:
+
+```js
+snitch.getFlags(['test-app-button-color', 'test-app-illustration-toggle']).then(console.log)
+```
+
+```JSON
+[
+    {
+        "flagKey": "test-app-button-color",
+        "match": true,
+        "variant": "red",
+        "attachment": ""
+    },
+    {
+        "flagKey": "test-app-illustration-toggle",
+        "match": false,
+        "variant": "",
+        "attachment": ""
+    }
+]
 ```

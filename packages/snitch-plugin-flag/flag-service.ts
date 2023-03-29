@@ -35,7 +35,7 @@ export interface EvaluationResponse {
 
 export interface BatchEvaluationResponse {
   requestId: string
-  response: EvaluationResponse[]
+  responses: EvaluationResponse[]
   requestDurationMillis: number
 }
 

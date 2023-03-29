@@ -94,8 +94,8 @@ export default function flagPlugin(options: {
             throw error
           }
 
-          flagEvaluations.response.forEach(captureEvaluationEvent)
-          return flagEvaluations.response.map(flagEvaluationToSimpleFlag)
+          flagEvaluations.responses.forEach(captureEvaluationEvent)
+          return flagEvaluations.responses.map(flagEvaluationToSimpleFlag)
         }
       }
     }

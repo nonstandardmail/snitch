@@ -1,11 +1,13 @@
 {
   "name": "@mrgis/snitch-plugin-session",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "",
   "keywords": [],
   "main": "dist/lib/snitch-plugin-session/index.js",
   "typings": "dist/types/snitch-plugin-session/index.d.ts",
-  "files": [ "dist" ],
+  "files": [
+    "dist"
+  ],
   "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
   "repository": {
     "type": "git",

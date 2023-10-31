@@ -10,6 +10,11 @@ export function setAnonymousUserId(userId: string) {
 
 export function getAnonymousUserId(): string | null {
   if (anonymousUserIdCache) return anonymousUserIdCache
-  anonymousUserIdCache = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
+  try {
+    anonymousUserIdCache = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY)
+  } catch (error) {
+    console.warn(error)
+    return null
+  }
   return anonymousUserIdCache
 }

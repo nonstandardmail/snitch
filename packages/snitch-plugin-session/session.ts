@@ -27,6 +27,8 @@ export default function sessionPlugin(): InitializationHandler &
   EventPayloadParamsProvider &
   EventSource {
   let captureEvent: EventHandler
+  let isLocalStorageSupported: boolean
+  let initTimestamp: number
 
   function isSessionExpired(): boolean {
     return Date.now() - storage.getLastInteractiveEventTS() > SESSION_EXPIRING_INACTIVITY_TIME_MSEC
@@ -47,6 +49,9 @@ export default function sessionPlugin(): InitializationHandler &
     },
 
     onInit() {
+      initTimestamp = Date.now()
+      isLocalStorageSupported = storage.isSupported()
+      if (!isLocalStorageSupported) return
       const deviceHadNoSessionsSoFar = storage.getSessionId() === null
       const urlHasUTMParams = utm.urlHasParams(window.location.href)
       const currentSessionExpired = isSessionExpired()
@@ -58,6 +63,7 @@ export default function sessionPlugin(): InitializationHandler &
     },
 
     beforeCaptureEvent() {
+      if (!isLocalStorageSupported) return
       if (isSessionExpired()) {
         startNewSession()
       }
@@ -65,6 +71,13 @@ export default function sessionPlugin(): InitializationHandler &
     },
 
     getEventPayloadParams() {
+      if (!isLocalStorageSupported)
+        return {
+          sid: 'unsupported',
+          scnt: '1',
+          set: Date.now() - initTimestamp,
+          sutm: ''
+        }
       return {
         sid: storage.getSessionId() as string,
         scnt: storage.getSessionCount(),

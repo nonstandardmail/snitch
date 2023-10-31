@@ -15,7 +15,6 @@ jobs:
         with:
           node-version: 16
       - run: npm install
-      - run: lerna bootstrap
       - run: npm test
       - run: npm run build
       - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc

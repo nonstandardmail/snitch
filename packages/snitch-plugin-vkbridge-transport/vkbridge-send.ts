@@ -1,7 +1,6 @@
 /** This one implements vk bridge send method so that
  * bridge does not have to be loaded prior to sending events */
 
-const method = 'VKWebAppTrackEvent'
 const webFrameId = undefined
 const version = '2.14.1'
 
@@ -51,7 +50,16 @@ interface VKWebAppTrackEventPayload {
   }
 }
 
-export default function send(props: VKWebAppTrackEventPayload) {
+interface VKWebAppSendCustomEvent {
+  event: string
+  json?: string
+  screen?: string
+}
+
+export default function send(
+  method: 'VKWebAppTrackEvent' | 'VKWebAppSendCustomEvent',
+  props: VKWebAppTrackEventPayload | VKWebAppSendCustomEvent
+) {
   // Sending data through Android bridge
   if (androidBridge && androidBridge[method]) {
     androidBridge[method](JSON.stringify(props))

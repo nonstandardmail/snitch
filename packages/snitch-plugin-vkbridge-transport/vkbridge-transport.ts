@@ -22,10 +22,14 @@ export default function vkbridgeTransportPlugin(): EventTransport {
             eventParams[paramKey] = eventParams[paramKey].toString()
         }
       }
-      vkBridgeSend({
+      vkBridgeSend('VKWebAppTrackEvent', {
         custom_user_id: vkUserId,
         event_name: eventName,
         event_params: eventParams
+      })
+      vkBridgeSend('VKWebAppSendCustomEvent', {
+        event: eventName,
+        json: JSON.stringify(eventParams)
       })
     }
   }

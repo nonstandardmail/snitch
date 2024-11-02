@@ -1,0 +1,17 @@
+{
+  "name": "@mrgis/snitch-ok-mini-apps",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "main": "dist/lib/snitch-ok-mini-apps/index.js",
+  "typings": "dist/types/snitch-ok-mini-apps/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Boris Chumichev <b.chumichev@corp.mail.ru>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nonstandardmail/snitch.git"
+  },
+  "license": "MIT"
+}
